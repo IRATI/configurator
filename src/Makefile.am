@@ -32,3 +32,5 @@ bin_SCRIPTS    += rina-confgen
 DISTCLEANFILES += rina-confgen
 EXTRA_DIST     += rina-confgen.in
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += rina-confgen
+
+EXTRA_DIST += apps.xml ipcps.xml topology.xml
