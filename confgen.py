@@ -3,7 +3,7 @@
 #
 # Configuration generator
 #
-#    Francesco Salvestrini <>f.salvestrini@nextworks.it
+#    Francesco Salvestrini <f.salvestrini@nextworks.it>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
