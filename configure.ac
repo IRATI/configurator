@@ -32,7 +32,8 @@ AC_PATH_PROG([SORT], [sort], [/bin/false])
 AC_PATH_PROG([UNIQ], [uniq], [/bin/false])
 AC_PATH_PROG([GIT],  [git],  [/bin/false])
 
-AM_PATH_PYTHON([2.7],[
+PYTHON_VERSION_MIN="2.7.3"
+AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     AX_PYTHON_MODULE([sys],,[
         AC_MSG_ERROR([Python module sys seems missing (???)])
     ])
@@ -43,7 +44,7 @@ AM_PATH_PYTHON([2.7],[
         AC_MSG_WARN([Python module xml.dom.minidom seems missing (???)])
     ])
 ],[
-    AC_MSG_ERROR([Python (>= 2.0) seems missing])
+    AC_MSG_ERROR([Python (>= $PYTHON_VERSION_MIN) seems missing])
 ])
 
 AC_CONFIG_FILES([
