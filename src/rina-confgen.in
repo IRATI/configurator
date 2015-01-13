@@ -9,12 +9,12 @@
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
@@ -38,6 +38,7 @@ def error(message):
 
 topology_filename = "topology.xml"
 ipcps_filename    = "ipcps.xml"
+nodes_filename    = "nodes.xml"
 
 try:
     parser = argparse.ArgumentParser(description='A configuration builder.',
@@ -58,10 +59,19 @@ try:
                         help='the IPC Process XML filename ' + \
                              '(default: %(default)s)')
 
+    parser.add_argument('--nodes',
+                        type=str,
+                        metavar="FILE",
+                        default=[ nodes_filename ],
+                        nargs=1,
+                        help='the nodes XML filename ' + \
+                             '(default: %(default)s)')
+
     args = parser.parse_args()
 
     topology_filename = args.topology[0]
     ipcps_filename    = args.ipcps[0]
+    nodes_filename    = args.nodes[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
@@ -69,6 +79,7 @@ except Exception as e:
 debug("Input files:")
 debug("  Topology = " + str(topology_filename))
 debug("  IPCPs    = " + str(ipcps_filename))
+debug("  Nodes    = " + str(nodes_filename))
 
 try:
     DOM_topology = xml.dom.minidom.parse(topology_filename)
@@ -89,7 +100,7 @@ try:
             debug("  Interface: " + \
                   interface.getAttribute("id") + \
                   " (" + interface.getAttribute("ip") + ")")
-    
+
     links = DOM_topology.getElementsByTagName("link")
 
     debug("File has " + str(len(links)) + " link(s), walking all of them ...")
@@ -131,6 +142,34 @@ try:
             debug("  IPCP registers to DIFs: " + str(dif_register))
 
     debug("IPCPs parsed successfully")
+
+    DOM_nodes = xml.dom.minidom.parse(nodes_filename)
+
+    debug("Parsing nodes")
+
+    root = DOM_nodes.documentElement
+    assert root.tagName == "nodes"
+
+    nodes = DOM_nodes.getElementsByTagName("node")
+    for node in nodes:
+        debug("Node: " + \
+              node.getAttribute("name"))
+
+        apps = node.getElementsByTagName("app")
+        for app in apps:
+            debug("  App = " + \
+                  app.getAttribute("ap-name") + \
+                  " " + \
+                  app.getAttribute("ap-instance"))
+
+            dif_regs = []
+            registrations = app.getElementsByTagName("register")
+            for reg in registrations:
+                dif_regs.append(str(reg.getAttribute("dif-name")))
+
+            debug("    App registered through: " + str(dif_regs))
+
+    debug("Nodes parsed succesfully")
 
 except Exception as e:
     error("Got a problem: " + str(e))
