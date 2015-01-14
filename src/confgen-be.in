@@ -1,7 +1,7 @@
 #!@PYTHON@
 
 #
-# Configuration generator (backend)
+# RINA Configuration Generator (backend)
 #
 #    Francesco Salvestrini <f.salvestrini@nextworks.it>
 #
@@ -21,5 +21,36 @@
 # MA  02110-1301  USA
 
 import sys
+import argparse
+
+tag = "confgen-be"
+
+def debug(message):
+    print(tag + ": " + message)
+
+def error(message):
+    print(tag + ": " + message)
+
+#
+# Main
+#
+
+input_dir = None
+
+try:
+    parser = argparse.ArgumentParser(description='RINA-ConfGen (BE)',
+                                     epilog='@PACKAGE_BUGREPORT@')
+    parser.add_argument('--input-dir',
+                        type=str,
+                        metavar="NAME",
+                        default=[ input_dir ],
+                        nargs=1,
+                        help='the topology XML filename ' + \
+                             '(default: %(default)s)')
+
+    args = parser.parse_args()
+except Exception as e:
+    error("Cannot parse options: " + str(e))
+    sys.exit(1)
 
 sys.exit(0)
