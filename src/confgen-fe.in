@@ -40,6 +40,7 @@ def error(message):
 topology_filename = "topology.xml"
 ipcps_filename    = "ipcps.xml"
 nodes_filename    = "nodes.xml"
+difs_filename     = "difs.xml"
 
 try:
     parser = argparse.ArgumentParser(description='A configuration builder.',
