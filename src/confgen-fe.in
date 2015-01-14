@@ -1,7 +1,7 @@
 #!@PYTHON@
 
 #
-# Configuration generator
+# Configuration generator (frontend)
 #
 #    Francesco Salvestrini <f.salvestrini@nextworks.it>
 #    Sander Vrijders       <sander.vrijders@intec.ugent.be>
