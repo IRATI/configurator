@@ -78,7 +78,7 @@ try:
                         help='the DIFs XML filename ' + \
                              '(default: %(default)s)')
 
-    parser.add_argument('--outputdir',
+    parser.add_argument('--output-dir',
                         type=str,
                         metavar="DIR",
                         default=[ output_dir ],
@@ -92,7 +92,7 @@ try:
     ipcps_filename    = args.ipcps[0]
     nodes_filename    = args.nodes[0]
     difs_filename     = args.difs[0]
-    output_dir        = args.outputdir[0]
+    output_dir        = args.output_dir[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
