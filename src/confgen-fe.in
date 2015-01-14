@@ -43,7 +43,7 @@ nodes_filename    = "nodes.xml"
 difs_filename     = "difs.xml"
 
 try:
-    parser = argparse.ArgumentParser(description='RINA-ConfGen (FE)',
+    parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (FE)',
                                      epilog='@PACKAGE_BUGREPORT@')
     parser.add_argument('--topology',
                         type=str,

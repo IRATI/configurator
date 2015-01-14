@@ -38,7 +38,7 @@ def error(message):
 input_dir = None
 
 try:
-    parser = argparse.ArgumentParser(description='RINA-ConfGen (BE)',
+    parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (BE)',
                                      epilog='@PACKAGE_BUGREPORT@')
     parser.add_argument('--input-dir',
                         type=str,
