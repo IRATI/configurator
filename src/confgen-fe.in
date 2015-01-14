@@ -1,7 +1,7 @@
 #!@PYTHON@
 
 #
-# Configuration generator (frontend)
+# RINA Configuration Generator (frontend)
 #
 #    Francesco Salvestrini <f.salvestrini@nextworks.it>
 #    Sander Vrijders       <sander.vrijders@intec.ugent.be>
@@ -25,7 +25,7 @@ import sys
 import xml.dom.minidom
 import argparse
 
-tag = "confgen"
+tag = "confgen-fe"
 
 def debug(message):
     print(tag + ": " + message)
@@ -43,7 +43,7 @@ nodes_filename    = "nodes.xml"
 difs_filename     = "difs.xml"
 
 try:
-    parser = argparse.ArgumentParser(description='A configuration builder.',
+    parser = argparse.ArgumentParser(description='RINA-ConfGen (FE)',
                                      epilog='@PACKAGE_BUGREPORT@')
     parser.add_argument('--topology',
                         type=str,
