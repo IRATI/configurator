@@ -19,7 +19,7 @@ edit = $(SED)							\
         -e 's|@PYTHON[@]|$(PYTHON)|g'				\
         -e 's|@SHELL[@]|$(SHELL)|g'
 
-rina-confgen: rina-confgen.in Makefile
+confgen-fe: confgen-fe.in Makefile
 	rm -f $@ $@.tmp
 	srcdir=''; \
 	  test -f ./$@.in || srcdir=$(srcdir)/; \
@@ -28,9 +28,9 @@ rina-confgen: rina-confgen.in Makefile
 	chmod a+x $@.tmp
 	mv $@.tmp $@
 
-bin_SCRIPTS    += rina-confgen
-DISTCLEANFILES += rina-confgen
-EXTRA_DIST     += rina-confgen.in
-AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += rina-confgen
+bin_SCRIPTS    += confgen-fe
+DISTCLEANFILES += confgen-fe
+EXTRA_DIST     += confgen-fe.in
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += confgen-fe
 
 EXTRA_DIST += apps.xml ipcps.xml topology.xml
