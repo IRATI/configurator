@@ -33,4 +33,18 @@ DISTCLEANFILES += confgen-fe
 EXTRA_DIST     += confgen-fe.in
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += confgen-fe
 
+confgen-be: confgen-be.in Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+	  test -f ./$@.in || srcdir=$(srcdir)/; \
+	  $(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	chmod a+x $@.tmp
+	mv $@.tmp $@
+
+bin_SCRIPTS    += confgen-be
+DISTCLEANFILES += confgen-be
+EXTRA_DIST     += confgen-be.in
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += confgen-be
+
 EXTRA_DIST += apps.xml ipcps.xml topology.xml
