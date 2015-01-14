@@ -4,6 +4,7 @@
 # Configuration generator
 #
 #    Francesco Salvestrini <f.salvestrini@nextworks.it>
+#    Sander Vrijders       <sander.vrijders@intec.ugent.be>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -180,9 +181,6 @@ try:
             debug("    App registered through: " + str(dif_regs))
 
     debug("Nodes parsed succesfully")
-
-
-
 
 except Exception as e:
     error("Got a problem: " + str(e))
