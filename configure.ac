@@ -12,7 +12,7 @@ AC_INIT([RINA Configuration Generator],
 
 AC_PREREQ([2.68])
 
-AC_CONFIG_SRCDIR([src/rina-confgen.in])
+AC_CONFIG_SRCDIR([src/confgen.in])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 
