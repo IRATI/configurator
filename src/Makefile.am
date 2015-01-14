@@ -19,6 +19,20 @@ edit = $(SED)							\
         -e 's|@PYTHON[@]|$(PYTHON)|g'				\
         -e 's|@SHELL[@]|$(SHELL)|g'
 
+confgen: confgen.in Makefile
+	rm -f $@ $@.tmp
+	srcdir=''; \
+	  test -f ./$@.in || srcdir=$(srcdir)/; \
+	  $(edit) $${srcdir}$@.in >$@.tmp
+	chmod a-w $@.tmp
+	chmod a+x $@.tmp
+	mv $@.tmp $@
+
+bin_SCRIPTS    += confgen
+DISTCLEANFILES += confgen
+EXTRA_DIST     += confgen.in
+AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += confgen
+
 confgen-fe: confgen-fe.in Makefile
 	rm -f $@ $@.tmp
 	srcdir=''; \
