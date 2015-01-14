@@ -41,6 +41,7 @@ topology_filename = "topology.xml"
 ipcps_filename    = "ipcps.xml"
 nodes_filename    = "nodes.xml"
 difs_filename     = "difs.xml"
+output_dir        = "configs"
 
 try:
     parser = argparse.ArgumentParser(description='A configuration builder.',
@@ -77,21 +78,31 @@ try:
                         help='the DIFs XML filename ' + \
                              '(default: %(default)s)')
 
+    parser.add_argument('--outputdir',
+                        type=str,
+                        metavar="DIR",
+                        default=[ output_dir ],
+                        nargs=1,
+                        help='the output dir of the XMLs ' + \
+                             '(default: %(default)s)')
+
     args = parser.parse_args()
 
     topology_filename = args.topology[0]
     ipcps_filename    = args.ipcps[0]
     nodes_filename    = args.nodes[0]
     difs_filename     = args.difs[0]
+    output_dir        = args.outputdir[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
 
 debug("Input files:")
-debug("  Topology = " + str(topology_filename))
-debug("  IPCPs    = " + str(ipcps_filename))
-debug("  Nodes    = " + str(nodes_filename))
-debug("  DIFs     = " + str(difs_filename))
+debug("  Topology   = " + str(topology_filename))
+debug("  IPCPs      = " + str(ipcps_filename))
+debug("  Nodes      = " + str(nodes_filename))
+debug("  DIFs       = " + str(difs_filename))
+debug("  Output dir = " + str(output_dir))
 
 try:
     DOM_topology = xml.dom.minidom.parse(topology_filename)
