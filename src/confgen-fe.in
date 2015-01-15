@@ -24,6 +24,8 @@
 import sys
 import xml.dom.minidom
 import argparse
+from xml.dom.minidom import getDOMImplementation
+import os.path
 
 tag = "confgen-fe"
 
@@ -39,9 +41,10 @@ def error(message):
 
 topology_filename = "topology.xml"
 ipcps_filename    = "ipcps.xml"
-nodes_filename    = "nodes.xml"
+apps_filename     = "apps.xml"
 difs_filename     = "difs.xml"
 output_dir        = "configs"
+conf_name         = "ipcmanager.conf"
 
 try:
     parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (FE)',
@@ -62,12 +65,12 @@ try:
                         help='the IPC Process XML filename ' + \
                              '(default: %(default)s)')
 
-    parser.add_argument('--nodes',
+    parser.add_argument('--apps',
                         type=str,
                         metavar="FILE",
-                        default=[ nodes_filename ],
+                        default=[ apps_filename ],
                         nargs=1,
-                        help='the nodes XML filename ' + \
+                        help='the applications XML filename ' + \
                              '(default: %(default)s)')
 
     parser.add_argument('--difs',
@@ -86,13 +89,22 @@ try:
                         help='the output dir of the XMLs ' + \
                              '(default: %(default)s)')
 
+    parser.add_argument('--conf-name',
+                        type=str,
+                        metavar="FILE",
+                        default=[ conf_name ],
+                        nargs=1,
+                        help='the prefix of the name of the config file ' + \
+                             '(default: %(default)s)')
+
     args = parser.parse_args()
 
     topology_filename = args.topology[0]
     ipcps_filename    = args.ipcps[0]
-    nodes_filename    = args.nodes[0]
+    apps_filename     = args.apps[0]
     difs_filename     = args.difs[0]
     output_dir        = args.output_dir[0]
+    conf_name         = args.conf_name[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
@@ -100,11 +112,16 @@ except Exception as e:
 debug("Input files:")
 debug("  Topology   = " + str(topology_filename))
 debug("  IPCPs      = " + str(ipcps_filename))
-debug("  Nodes      = " + str(nodes_filename))
+debug("  Apps       = " + str(apps_filename))
 debug("  DIFs       = " + str(difs_filename))
 debug("  Output dir = " + str(output_dir))
 
 try:
+    impl = getDOMImplementation()
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     DOM_topology = xml.dom.minidom.parse(topology_filename)
 
     debug("Parsing topology")
@@ -116,7 +133,16 @@ try:
 
     debug("File has " + str(len(nodes)) + " node(s), walking all of them ...")
     for node in nodes:
-        debug("Node: " + node.getAttribute("id"))
+        id = node.getAttribute("id")
+        debug("Node: " + id)
+
+        f = open(os.path.join(output_dir, conf_name + "-" + id + ".xml"),'w')
+        newdoc = impl.createDocument(None, "config", None)
+        root = newdoc.documentElement
+        text = newdoc.createTextNode('We all love pippo.')
+        root.appendChild(text)
+
+        newdoc.writexml(f, indent="", addindent="", newl="\n")
 
         interfaces = node.getElementsByTagName("interface")
         for interface in interfaces:
@@ -166,27 +192,27 @@ try:
 
     debug("IPCPs parsed successfully")
 
-    DOM_nodes = xml.dom.minidom.parse(nodes_filename)
+    DOM_nodes = xml.dom.minidom.parse(apps_filename)
 
-    debug("Parsing nodes")
+    debug("Parsing apps")
 
     root = DOM_nodes.documentElement
-    assert root.tagName == "nodes"
+    assert root.tagName == "apps"
 
-    nodes = DOM_nodes.getElementsByTagName("node")
-    for node in nodes:
-        debug("Node: " + \
-              node.getAttribute("name"))
+    apps = DOM_nodes.getElementsByTagName("app")
+    for app in apps:
+        debug("App = " + \
+              app.getAttribute("ap-name") + \
+              " " + \
+              app.getAttribute("ap-instance"))
 
-        apps = node.getElementsByTagName("app")
-        for app in apps:
-            debug("  App = " + \
-                  app.getAttribute("ap-name") + \
-                  " " + \
-                  app.getAttribute("ap-instance"))
+        nodes = app.getElementsByTagName("node")
+        for node in nodes:
+            debug("  Node: " + \
+                  node.getAttribute("name"))
 
             dif_regs = []
-            registrations = app.getElementsByTagName("register")
+            registrations = node.getElementsByTagName("register")
             for reg in registrations:
                 dif_regs.append(str(reg.getAttribute("dif-name")))
 

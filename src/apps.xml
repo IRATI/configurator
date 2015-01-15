@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<nodes>
-  <node name="m">
+<apps>
     <app ap-name="rina.apps.echotime.server" ap-instance="1">
-      <register dif-name="normal.DIF"/>
+      <node name="m">
+        <register dif-name="normal.DIF"/>
+      </node>
     </app>
-  </node>
-</nodes>
+</apps>
