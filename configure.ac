@@ -43,6 +43,15 @@ AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     AX_PYTHON_MODULE([xml.dom.minidom],,[
         AC_MSG_WARN([Python module xml.dom.minidom seems missing (???)])
     ])
+    AX_PYTHON_MODULE([tempfile],,[
+        AC_MSG_WARN([Python module tempfile seems missing (???)])
+    ])
+    AX_PYTHON_MODULE([shutil],,[
+        AC_MSG_WARN([Python module shutil seems missing (???)])
+    ])
+    AX_PYTHON_MODULE([subprocess],,[
+        AC_MSG_WARN([Python module subprocess seems missing (???)])
+    ])
 ],[
     AC_MSG_ERROR([Python (>= $PYTHON_VERSION_MIN) seems missing])
 ])
