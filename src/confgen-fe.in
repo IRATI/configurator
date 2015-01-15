@@ -44,7 +44,7 @@ ipcps_filename    = "ipcps.xml"
 apps_filename     = "apps.xml"
 difs_filename     = "difs.xml"
 output_dir        = "configs"
-conf_name         = "ipcmanager.conf"
+prefix_name       = "ipcmanager"
 
 try:
     parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (FE)',
@@ -89,12 +89,12 @@ try:
                         help='the output dir of the XMLs ' + \
                              '(default: %(default)s)')
 
-    parser.add_argument('--conf-name',
+    parser.add_argument('--prefix',
                         type=str,
                         metavar="FILE",
-                        default=[ conf_name ],
+                        default=[ prefix_name ],
                         nargs=1,
-                        help='the prefix of the name of the config file ' + \
+                        help='the prefix of the name of the output files ' + \
                              '(default: %(default)s)')
 
     args = parser.parse_args()
@@ -104,16 +104,17 @@ try:
     apps_filename     = args.apps[0]
     difs_filename     = args.difs[0]
     output_dir        = args.output_dir[0]
-    conf_name         = args.conf_name[0]
+    prefix_name       = args.prefix[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
 
-debug("Input files:")
+debug("Input args:")
 debug("  Topology   = " + str(topology_filename))
 debug("  IPCPs      = " + str(ipcps_filename))
 debug("  Apps       = " + str(apps_filename))
 debug("  DIFs       = " + str(difs_filename))
+debug("  Prefix     = " + str(prefix_name))
 debug("  Output dir = " + str(output_dir))
 
 try:
@@ -136,7 +137,7 @@ try:
         id = node.getAttribute("id")
         debug("Node: " + id)
 
-        f = open(os.path.join(output_dir, conf_name + "-" + id + ".xml"),'w')
+        f = open(os.path.join(output_dir, prefix_name + "-" + id + ".xml"),'w')
         newdoc = impl.createDocument(None, "config", None)
         root = newdoc.documentElement
         text = newdoc.createTextNode('We all love Pippo.')
