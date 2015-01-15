@@ -34,28 +34,95 @@ def debug(message):
 def error(message):
     print(tag + ": " + message)
 
+topology_filename = "topology.xml"
+ipcps_filename    = "ipcps.xml"
+apps_filename     = "apps.xml"
+difs_filename     = "difs.xml"
+output_dir        = "configs"
+conf_name         = "ipcmanager.conf"
+
 try:
-    parser = argparse.ArgumentParser(description='@PACKAGE_NAME@',
+    parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (FE)',
                                      epilog='@PACKAGE_BUGREPORT@')
+    parser.add_argument('--topology',
+                        type=str,
+                        metavar="FILE",
+                        default=[ topology_filename ],
+                        nargs=1,
+                        help='the topology XML filename ' + \
+                             '(default: %(default)s)')
+
+    parser.add_argument('--ipcps',
+                        type=str,
+                        metavar="FILE",
+                        default=[ ipcps_filename ],
+                        nargs=1,
+                        help='the IPC Process XML filename ' + \
+                             '(default: %(default)s)')
+
+    parser.add_argument('--apps',
+                        type=str,
+                        metavar="FILE",
+                        default=[ apps_filename ],
+                        nargs=1,
+                        help='the applications XML filename ' + \
+                             '(default: %(default)s)')
+
+    parser.add_argument('--difs',
+                        type=str,
+                        metavar="FILE",
+                        default=[ difs_filename ],
+                        nargs=1,
+                        help='the DIFs XML filename ' + \
+                             '(default: %(default)s)')
+
+    parser.add_argument('--output-dir',
+                        type=str,
+                        metavar="DIR",
+                        default=[ output_dir ],
+                        nargs=1,
+                        help='the output dir of the XMLs ' + \
+                             '(default: %(default)s)')
 
     args = parser.parse_args()
+
+    topology_filename = args.topology[0]
+    ipcps_filename    = args.ipcps[0]
+    apps_filename     = args.apps[0]
+    difs_filename     = args.difs[0]
+    output_dir        = args.output_dir[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
+
+debug("Input files:")
+debug("  Topology   = " + str(topology_filename))
+debug("  IPCPs      = " + str(ipcps_filename))
+debug("  Apps       = " + str(apps_filename))
+debug("  DIFs       = " + str(difs_filename))
+debug("  Output dir = " + str(output_dir))
 
 try:
     tempdir = tempfile.mkdtemp()
 
     debug("Using " + tempdir + " as temporary directory")
 
-    subprocess.check_call(["ls", "-l"])
+    debug("Running step #1")
+    subprocess.check_call(["@bindir@/confgen-fe",
+                           "--topology",   topology_filename,
+                           "--ipcps",      ipcps_filename,
+                           "--apps",       apps_filename,
+                           "--difs",       difs_filename,
+                           "--prefix",     "ipcmanager",
+                           "--output-dir", tempdir])
 
-    subprocess.check_call(["@bindir@/confgen-fe", "-h"])
-    subprocess.check_call(["@bindir@/confgen-be", "-h"])
+    debug("Running step #2")
+    subprocess.check_call(["@bindir@/confgen-be",
+                           "--input-dir",  tempdir])
 
     shutil.rmtree(tempdir)
 except subprocess.CalledProcessError as e:
-    error("Cannot call subprocess '" + e.cmd + "'")
+    error("Cannot call subprocess '" + str(e.cmd) + "'")
 except Exception as e:
     error("Cannot process your request: " + str(e))
     sys.exit(1)
