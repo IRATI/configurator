@@ -193,14 +193,14 @@ try:
 
     debug("IPCPs parsed successfully")
 
-    DOM_nodes = xml.dom.minidom.parse(apps_filename)
+    DOM_apps = xml.dom.minidom.parse(apps_filename)
 
     debug("Parsing apps")
 
-    root = DOM_nodes.documentElement
+    root = DOM_apps.documentElement
     assert root.tagName == "apps"
 
-    apps = DOM_nodes.getElementsByTagName("app")
+    apps = DOM_apps.getElementsByTagName("app")
     for app in apps:
         debug("App = " + \
               app.getAttribute("ap-name") + \
@@ -219,7 +219,92 @@ try:
 
             debug("    App registered through: " + str(dif_regs))
 
-    debug("Nodes parsed succesfully")
+    debug("Apps parsed succesfully")
+
+    DOM_difs = xml.dom.minidom.parse(difs_filename)
+
+    debug("Parsing DIFs")
+
+    root = DOM_difs.documentElement
+    assert root.tagName == "difs"
+
+    difs = DOM_difs.getElementsByTagName("dif")
+    for dif in difs:
+        debug("DIF: " + dif.getAttribute("id"))
+        dif_type = dif.getAttribute("type")
+        debug("  Type: " + dif_type)
+
+        if dif_type == "normal-ipc":
+            debug("  cdapTimeoutInMs: " +
+                  dif.getAttribute("cdapTimeoutInMs"))
+            debug("  enrollmentTimeoutInMs: " +
+                  dif.getAttribute("enrollmentTimeoutInMs"))
+            debug("  flowAllocatorTimeoutInMs: " +
+                  dif.getAttribute("flowAllocatorTimeoutInMs"))
+            debug("  watchdogPeriodInMs: " +
+                  dif.getAttribute("watchdogPeriodInMs"))
+            debug("  declaredDeadIntervalInMs: " +
+                  dif.getAttribute("declaredDeadIntervalInMs"))
+            debug("  neighborsEnrollerPeriodInMs: " +
+                  dif.getAttribute("neighborsEnrollerPeriodInMs"))
+
+            dtc = dif.getElementsByTagName("data-transfer-constants")[0]
+            debug("  Data transfer constants: ")
+            debug("    addressLength: " + dtc.getAttribute("addressLength"))
+            debug("    cepIdLength: " + dtc.getAttribute("cepIdLength"))
+            debug("    addressLength: " + dtc.getAttribute("addressLength"))
+            debug("    lengthLength: " + dtc.getAttribute("lengthLength"))
+            debug("    portIdLength: " + dtc.getAttribute("portIdLength"))
+            debug("    qosIdLength: " + dtc.getAttribute("qosIdLength"))
+            debug("    sequenceNumberLength: " + dtc.getAttribute("sequenceNumberLength"))
+            debug("    maxPduSize: " + dtc.getAttribute("maxPduSize"))
+            debug("    maxPduLifetime: " + dtc.getAttribute("maxPduLifetime"))
+
+            # To be extended to include EFCP
+            qoscubes = dif.getElementsByTagName("qos-cube")
+            for qoscube in qoscubes:
+                debug("  QoS cube " + qoscube.getAttribute("id") + ":")
+                debug("    name: " + qoscube.getAttribute("name"))
+                debug("    partialDelivery: " +
+                      qoscube.getAttribute("partialDelivery"))
+                debug("    orderedDelivery: " +
+                      qoscube.getAttribute("orderedDelivery"))
+
+            kias = dif.getElementsByTagName("known-ipcp-address")
+            for kia in kias:
+                debug("  Known IPC address: " +
+                      kia.getAttribute("apName") +
+                      " " +
+                      kia.getAttribute("apInstance"))
+                debug("    Address: " +
+                      kia.getAttribute("address"))
+
+            pft = dif.getElementsByTagName("pft-conf")[0]
+            if not pft == "":
+                debug("  PFT configuration: ")
+
+                pftp = pft.getElementsByTagName("pft-policy")[0]
+                debug("    pft-policy: " + pftp.getAttribute("name"))
+                debug("    version: " + pftp.getAttribute("version"))
+
+                lsrc = pft.getElementsByTagName("link-state-routing-conf")[0]
+                debug("    link-state-routing-conf: ")
+                debug("      objectMaximumAge: " +
+                      lsrc.getAttribute("objectMaximumAge"))
+                debug("      waitUntilReadCDAP: " +
+                      lsrc.getAttribute("waitUntilReadCDAP"))
+                debug("      waitUntilError: " +
+                      lsrc.getAttribute("waitUntilError"))
+                debug("      waitUntilPDUFTComputation: " +
+                      lsrc.getAttribute("waitUntilPDUFTComputation"))
+                debug("      waitUntilFSODBPropagation: " +
+                      lsrc.getAttribute("waitUntilFSODBPropagation"))
+                debug("      waitUntilAgeIncrement: " +
+                      lsrc.getAttribute("waitUntilAgeIncrement"))
+                debug("      routingAlgorithm: " +
+                      lsrc.getAttribute("routingAlgorithm"))
+
+    debug("DIF parsing done")
 
 except Exception as e:
     error("Got a problem: " + str(e))
