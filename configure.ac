@@ -46,6 +46,9 @@ AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     AX_PYTHON_MODULE([xml.dom.minidom],,[
         AC_MSG_WARN([Python module xml.dom.minidom seems missing (???)])
     ])
+    AX_PYTHON_MODULE([xml.sax],,[
+        AC_MSG_WARN([Python module xml.sax seems missing (???)])
+    ])
     AX_PYTHON_MODULE([tempfile],,[
         AC_MSG_WARN([Python module tempfile seems missing (???)])
     ])
