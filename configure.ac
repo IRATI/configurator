@@ -37,6 +37,9 @@ AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     AX_PYTHON_MODULE([sys],,[
         AC_MSG_ERROR([Python module sys seems missing (???)])
     ])
+    AX_PYTHON_MODULE([os],,[
+        AC_MSG_ERROR([Python module os seems missing (???)])
+    ])
     AX_PYTHON_MODULE([argparse],,[
         AC_MSG_WARN([Python module arparse seems missing (???)])
     ])
