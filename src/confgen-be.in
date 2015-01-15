@@ -21,6 +21,7 @@
 # MA  02110-1301  USA
 
 import sys
+import os
 import argparse
 
 tag = "confgen-be"
@@ -43,14 +44,28 @@ try:
     parser.add_argument('--input-dir',
                         type=str,
                         metavar="NAME",
-                        default=[ input_dir ],
                         nargs=1,
-                        help='the topology XML filename ' + \
-                             '(default: %(default)s)')
+                        help='the input directory containing the files ' + \
+                             'to be processed')
 
     args = parser.parse_args()
+
+    input_dir = args.input_dir[0]
+
+    if (input_dir is None):
+        raise Exception("Missing parameter(s)")
 except Exception as e:
     error("Cannot parse options: " + str(e))
+    sys.exit(1)
+
+try:
+    for dpath, dnames, fnames in os.walk(input_dir):
+        for f in fnames:
+            fullpath = os.path.join(dpath, f)
+            debug("Running on " + fullpath)
+    
+except Exception as e:
+    error("Cannot execute successfully: " + str(e))
     sys.exit(1)
 
 sys.exit(0)
