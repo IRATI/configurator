@@ -112,7 +112,7 @@ try:
                            "--ipcps",      ipcps_filename,
                            "--apps",       apps_filename,
                            "--difs",       difs_filename,
-                           "--prefix",     "ipcmanager",
+                           "--prefix",     "ipcm",
                            "--output-dir", tempdir])
 
     debug("Running step #2")
