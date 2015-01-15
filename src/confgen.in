@@ -114,10 +114,12 @@ try:
                            "--difs",       difs_filename,
                            "--prefix",     "ipcm",
                            "--output-dir", tempdir])
+    debug("Step seems ok")
 
     debug("Running step #2")
     subprocess.check_call(["@bindir@/confgen-be",
                            "--input-dir",  tempdir])
+    debug("Step seems ok")
 
     shutil.rmtree(tempdir)
 except subprocess.CalledProcessError as e:
