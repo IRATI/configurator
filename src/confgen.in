@@ -22,6 +22,9 @@
 
 import sys
 import argparse
+import tempfile
+import shutil
+import subprocess
 
 tag = "confgen"
 
@@ -38,6 +41,23 @@ try:
     args = parser.parse_args()
 except Exception as e:
     error("Cannot parse options: " + str(e))
+    sys.exit(1)
+
+try:
+    tempdir = tempfile.mkdtemp()
+
+    debug("Using " + tempdir + " as temporary directory")
+
+    subprocess.check_call(["ls", "-l"])
+
+    subprocess.check_call(["@bindir@/confgen-fe", "-h"])
+    subprocess.check_call(["@bindir@/confgen-be", "-h"])
+
+    shutil.rmtree(tempdir)
+except subprocess.CalledProcessError as e:
+    error("Cannot call subprocess '" + e.cmd + "'")
+except Exception as e:
+    error("Cannot process your request: " + str(e))
     sys.exit(1)
 
 sys.exit(0)

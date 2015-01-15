@@ -17,6 +17,7 @@ edit = $(SED)							\
         -e 's|@PACKAGE_URL[@]|$(PACKAGE_URL)|g'			\
         -e 's|@PACKAGE_BUGREPORT[@]|$(PACKAGE_BUGREPORT)|g'	\
         -e 's|@PYTHON[@]|$(PYTHON)|g'				\
+        -e 's|@bindir[@]|$(bindir)|g'				\
         -e 's|@SHELL[@]|$(SHELL)|g'
 
 confgen: confgen.in Makefile
