@@ -23,6 +23,7 @@
 import sys
 import os
 import argparse
+import xml.sax
 
 tag = "confgen-be"
 
@@ -36,9 +37,25 @@ def error(message):
 # Utilities
 #
 
+class RCGHandler(xml.sax.ContentHandler):
+    def startElement(self, name, attrs):
+        debug("Got '" + name + "'")
+        for (k, v) in attrs.items():
+            debug("  Attrs = " + name + "(" + k + " " + v + ")")
+
 def transform(input_filename, output_filename):
     debug("Will be transforming " +
           "'" + input_filename + "' into '" + output_filename + "'")
+
+    with open(input_filename, 'r') as content_file:
+        debug("Contents of '" + input_filename + "' are:\n" + \
+              content_file.read())
+
+    debug("Transformation in progress:")
+    parser = xml.sax.make_parser()
+    parser.setContentHandler(RCGHandler())
+    parser.parse(open(input_filename,"r"))
+    debug("Transformation completed")
 
 def process(path):
     debug("Processing file '" + fullpath + "'")
