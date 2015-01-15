@@ -24,7 +24,7 @@
 import sys
 import xml.dom.minidom
 import argparse
-from xml.dom.minidom import getDOMImplementation
+from   xml.dom.minidom import getDOMImplementation
 import os.path
 
 tag = "confgen-fe"
@@ -139,7 +139,7 @@ try:
         f = open(os.path.join(output_dir, conf_name + "-" + id + ".xml"),'w')
         newdoc = impl.createDocument(None, "config", None)
         root = newdoc.documentElement
-        text = newdoc.createTextNode('We all love pippo.')
+        text = newdoc.createTextNode('We all love Pippo.')
         root.appendChild(text)
 
         newdoc.writexml(f, indent="", addindent="", newl="\n")
