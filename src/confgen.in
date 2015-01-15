@@ -39,7 +39,6 @@ ipcps_filename    = "ipcps.xml"
 apps_filename     = "apps.xml"
 difs_filename     = "difs.xml"
 output_dir        = "configs"
-conf_name         = "ipcmanager.conf"
 
 try:
     parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (FE)',
