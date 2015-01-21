@@ -26,6 +26,7 @@ import xml.dom.minidom
 import argparse
 from   xml.dom.minidom import getDOMImplementation
 import os.path
+from datamodel import *
 
 tag = "confgen-fe"
 
@@ -34,6 +35,20 @@ def debug(message):
 
 def error(message):
     print(tag + ": " + message)
+
+# Holding global vars here
+
+nodes = []
+difs = []
+
+#Auxiliary functions
+
+def find_node(node_name):
+    for node in nodes:
+        if node.name == node_name:
+            return node
+    raise LookupError("Could not find node in known nodes list")
+
 
 #
 # Main
@@ -130,26 +145,18 @@ try:
     topology = DOM_topology.documentElement
     assert topology.tagName == "topology"
 
-    nodes = DOM_topology.getElementsByTagName("node")
+    nodes_d = DOM_topology.getElementsByTagName("node")
 
-    debug("File has " + str(len(nodes)) + " node(s), walking all of them ...")
-    for node in nodes:
-        id = node.getAttribute("id")
-        debug("Node: " + id)
-
-        f = open(os.path.join(output_dir, prefix_name + "-" + id + ".xml"),'w')
-        newdoc = impl.createDocument(None, "config", None)
-        root = newdoc.documentElement
-        text = newdoc.createTextNode('We all love Pippo.')
-        root.appendChild(text)
-
-        newdoc.writexml(f, indent="", addindent="", newl="\n")
+    for node in nodes_d:
+        new_node = Node(node.getAttribute("id"))
 
         interfaces = node.getElementsByTagName("interface")
         for interface in interfaces:
-            debug("  Interface: " + \
-                  interface.getAttribute("id") + \
-                  " (" + interface.getAttribute("ip") + ")")
+            new_int = Interface(interface.getAttribute("id"))
+            new_int.ip = interface.getAttribute("ip")
+            new_node.interfaces.append(new_int)
+
+        nodes.append(new_node)
 
     links = DOM_topology.getElementsByTagName("link")
 
@@ -171,25 +178,23 @@ try:
     ipcps = DOM_ipcps.documentElement
     assert ipcps.tagName == "ipcps"
 
-    nodes = DOM_ipcps.getElementsByTagName("node")
-    for node in nodes:
-        debug("Node:" + node.getAttribute("id"))
+    nodes_d = DOM_ipcps.getElementsByTagName("node")
+    for node in nodes_d:
         ipcps = node.getElementsByTagName("ipcp")
-        for ipcp in ipcps:
-            debug("  IPCP = " + \
-                  ipcp.getAttribute("ap-name") + \
-                  " " + \
-                  ipcp.getAttribute("ap-instance"))
 
-            dif_assign    = ipcp.getAttribute("dif")
+        node_n = find_node(node.getAttribute("id"))
+
+        for ipcp in ipcps:
+            new_name = RINA_Name(ipcp.getAttribute("ap-name"), \
+                                 ipcp.getAttribute("ap-instance"))
+            new_ipcp = IPCP(new_name)
+            new_ipcp.dif_name = ipcp.getAttribute("dif")
 
             registrations = ipcp.getElementsByTagName("register-dif")
-            dif_register  = []
             for dif in registrations:
-                dif_register.append(str(dif.getAttribute("name")))
+                new_ipcp.registrations.append(str(dif.getAttribute("name")))
 
-            debug("  IPCP assigned to DIF:   " + dif_assign)
-            debug("  IPCP registers to DIFs: " + str(dif_register))
+            node_n.ipcps.append(new_ipcp)
 
     debug("IPCPs parsed successfully")
 
@@ -202,22 +207,20 @@ try:
 
     apps = DOM_apps.getElementsByTagName("app")
     for app in apps:
-        debug("App = " + \
-              app.getAttribute("ap-name") + \
-              " " + \
-              app.getAttribute("ap-instance"))
+        nodes_d = app.getElementsByTagName("node")
+        for node in nodes_d:
+            node_n = find_node(node.getAttribute("name"))
 
-        nodes = app.getElementsByTagName("node")
-        for node in nodes:
-            debug("  Node: " + \
-                  node.getAttribute("name"))
+            new_name = RINA_Name(app.getAttribute("ap-name"), \
+                                 app.getAttribute("ap-instance"))
 
-            dif_regs = []
+            new_app = App(new_name)
+
             registrations = node.getElementsByTagName("register")
             for reg in registrations:
-                dif_regs.append(str(reg.getAttribute("dif-name")))
+                new_app.regs.append(str(reg.getAttribute("dif-name")))
 
-            debug("    App registered through: " + str(dif_regs))
+            node_n.apps.append(new_app)
 
     debug("Apps parsed succesfully")
 
@@ -228,47 +231,44 @@ try:
     root = DOM_difs.documentElement
     assert root.tagName == "difs"
 
-    difs = DOM_difs.getElementsByTagName("dif")
-    for dif in difs:
-        debug("DIF: " + dif.getAttribute("id"))
-        dif_type = dif.getAttribute("type")
-        debug("  Type: " + dif_type)
+    difs_d = DOM_difs.getElementsByTagName("dif")
+    for dif in difs_d:
+        new_dif = DIF(dif.getAttribute("id"))
+        new_dif.dif_type = dif.getAttribute("type")
 
-        if dif_type == "normal-ipc":
-            debug("  cdapTimeoutInMs: " +
-                  dif.getAttribute("cdapTimeoutInMs"))
-            debug("  enrollmentTimeoutInMs: " +
-                  dif.getAttribute("enrollmentTimeoutInMs"))
-            debug("  flowAllocatorTimeoutInMs: " +
-                  dif.getAttribute("flowAllocatorTimeoutInMs"))
-            debug("  watchdogPeriodInMs: " +
-                  dif.getAttribute("watchdogPeriodInMs"))
-            debug("  declaredDeadIntervalInMs: " +
-                  dif.getAttribute("declaredDeadIntervalInMs"))
-            debug("  neighborsEnrollerPeriodInMs: " +
-                  dif.getAttribute("neighborsEnrollerPeriodInMs"))
+        if new_dif.dif_type == "normal-ipc":
+            new_dif.cdap_timeout = \
+                    dif.getAttribute("cdapTimeoutInMs")
+            new_dif.enroll_timeout = \
+                    dif.getAttribute("enrollmentTimeoutInMs")
+            new_dif.flow_alloc_timeout = \
+                    dif.getAttribute("flowAllocatorTimeoutInMs")
+            new_dif.watchdog_period = \
+                    dif.getAttribute("watchdogPeriodInMs")
+            new_dif.decl_dead_int = \
+                    dif.getAttribute("declaredDeadIntervalInMs")
+            new_dif.neigh_enroll_period = \
+                    dif.getAttribute("neighborsEnrollerPeriodInMs")
 
             dtc = dif.getElementsByTagName("data-transfer-constants")[0]
-            debug("  Data transfer constants: ")
-            debug("    addressLength: " + dtc.getAttribute("addressLength"))
-            debug("    cepIdLength: " + dtc.getAttribute("cepIdLength"))
-            debug("    addressLength: " + dtc.getAttribute("addressLength"))
-            debug("    lengthLength: " + dtc.getAttribute("lengthLength"))
-            debug("    portIdLength: " + dtc.getAttribute("portIdLength"))
-            debug("    qosIdLength: " + dtc.getAttribute("qosIdLength"))
-            debug("    sequenceNumberLength: " + dtc.getAttribute("sequenceNumberLength"))
-            debug("    maxPduSize: " + dtc.getAttribute("maxPduSize"))
-            debug("    maxPduLifetime: " + dtc.getAttribute("maxPduLifetime"))
+            new_dtc = Data_Transfer_Constants(dtc.getAttribute("addressLength"), \
+                                              dtc.getAttribute("cepIdLength"), \
+                                              dtc.getAttribute("lengthLength"), \
+                                              dtc.getAttribute("portIdLength"), \
+                                              dtc.getAttribute("qosIdLength"), \
+                                              dtc.getAttribute("sequenceNumberLength"), \
+                                              dtc.getAttribute("maxPduSize"), \
+                                              dtc.getAttribute("maxPduLifetime"))
+            new_dif.data_transfer_const = new_dtc
 
             # To be extended to include EFCP
             qoscubes = dif.getElementsByTagName("qos-cube")
             for qoscube in qoscubes:
-                debug("  QoS cube " + qoscube.getAttribute("id") + ":")
-                debug("    name: " + qoscube.getAttribute("name"))
-                debug("    partialDelivery: " +
-                      qoscube.getAttribute("partialDelivery"))
-                debug("    orderedDelivery: " +
-                      qoscube.getAttribute("orderedDelivery"))
+                new_cube = QoS_Cube(qoscube.getAttribute("id"), \
+                                    qoscube.getAttribute("name"))
+                new_cube.part_del = qoscube.getAttribute("partialDelivery")
+                new_cube.ord_del = qoscube.getAttribute("orderedDelivery")
+                new_dif.qos_cubes.append(new_cube)
 
             kias = dif.getElementsByTagName("known-ipcp-address")
             for kia in kias:
@@ -303,8 +303,37 @@ try:
                       lsrc.getAttribute("waitUntilAgeIncrement"))
                 debug("      routingAlgorithm: " +
                       lsrc.getAttribute("routingAlgorithm"))
-
+        difs.append(new_dif)
     debug("DIF parsing done")
+
+    debug("Showing you the data model")
+
+    for node in nodes:
+        debug("Node: " + node.name)
+        for interface in node.interfaces:
+            debug("  Interface: " + interface.name + " " + interface.ip)
+
+        for ipcp in node.ipcps:
+            debug("  IPCP name: " + ipcp.name.ap_name + " " + ipcp.name.ap_inst)
+            debug("    Part of DIF: " + ipcp.dif_name)
+
+        for app in node.apps:
+            debug("  App name: " + app.name.ap_name + " " + app.name.ap_inst)
+            for reg in app.regs:
+                debug("    Registers at: " + reg)
+
+    for dif in difs:
+        debug("DIF name: " + dif.name)
+        debug("  DIF type: " + dif.dif_type)
+
+    for node in nodes:
+        f = open(os.path.join(output_dir, prefix_name + "-" + node.name + ".xml"),'w')
+        newdoc = impl.createDocument(None, "config", None)
+        root = newdoc.documentElement
+        text = newdoc.createTextNode('We all love Pippo.')
+        root.appendChild(text)
+        newdoc.writexml(f, indent="", addindent="", newl="\n")
+
 
 except Exception as e:
     error("Got a problem: " + str(e))
