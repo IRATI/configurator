@@ -82,13 +82,42 @@ class QoS_Cube:
         self.part_del = part_del
         self.ord_del = ord_del
 
+class Known_IPCP_Address:
+    """ Holds the mapping of RINA name on address """
+    def __init__(self, name, address):
+        self.name = name
+        self.address = address
+
+class Link_State_Routing_Configuration:
+    """ Holds parameters for Link State Routing """
+    def __init__(self, obj_max_age = "", \
+                 read_cdap_time = "", error_time = "", \
+                 recompute_time = "", repropagate_time = "", \
+                 increment_time = "", algorithm = ""):
+        self.obj_max_age = obj_max_age
+        self.read_cdap_time = read_cdap_time
+        self.error_time = error_time
+        self.recompute_time = recompute_time
+        self.repropagate_time = repropagate_time
+        self.increment_time = increment_time
+        self.algorithm = algorithm
+
+class PFT_Configuration:
+    """ Class that holds the (current) PFT configuration """
+    """                                                  """
+    """ Has to be revised, since it is a policy          """
+    def __init__(self, name, version = "", lsr_conf = ""):
+        self.name = name
+        self.version = version
+        self.lsr_conf = lsr_conf
+
 class DIF:
     """ A class that represents a Distributed IPC Facility """
     def __init__(self, name, dif_type = "", \
                  cdap_timeout = "", enroll_timeout = "", \
                  flow_alloc_timeout = "", watchdog_period = "", \
                  decl_dead_int = "", neigh_enroll_period = "", \
-                 data_transfer_const = ""):
+                 data_transfer_const = "", pft_conf= ""):
         self.name = name
         self.dif_type = dif_type
         self.cdap_timeout = cdap_timeout
@@ -99,4 +128,5 @@ class DIF:
         self.neigh_enroll_period = neigh_enroll_period
         self.data_transfer_const = data_transfer_const
         self.qos_cubes = []
-        self.known_ipc_addr = []
+        self.known_ipcp_addr = []
+        self.pft_conf = pft_conf

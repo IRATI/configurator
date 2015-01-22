@@ -43,12 +43,17 @@ difs = []
 
 #Auxiliary functions
 
-def find_node(node_name):
+def find_node(nodes, node_name):
     for node in nodes:
         if node.name == node_name:
             return node
     raise LookupError("Could not find node in known nodes list")
 
+def find_dif(difs, dif_name):
+    for dif in difs:
+        if dif.name == dif_name:
+            return dif
+    raise LookupError("Could not find DIF in known DIFs list")
 
 #
 # Main
@@ -182,7 +187,7 @@ try:
     for node in nodes_d:
         ipcps = node.getElementsByTagName("ipcp")
 
-        node_n = find_node(node.getAttribute("id"))
+        node_n = find_node(nodes, node.getAttribute("id"))
 
         for ipcp in ipcps:
             new_name = RINA_Name(ipcp.getAttribute("ap-name"), \
@@ -209,7 +214,7 @@ try:
     for app in apps:
         nodes_d = app.getElementsByTagName("node")
         for node in nodes_d:
-            node_n = find_node(node.getAttribute("name"))
+            node_n = find_node(nodes, node.getAttribute("name"))
 
             new_name = RINA_Name(app.getAttribute("ap-name"), \
                                  app.getAttribute("ap-instance"))
@@ -272,37 +277,32 @@ try:
 
             kias = dif.getElementsByTagName("known-ipcp-address")
             for kia in kias:
-                debug("  Known IPC address: " +
-                      kia.getAttribute("apName") +
-                      " " +
-                      kia.getAttribute("apInstance"))
-                debug("    Address: " +
-                      kia.getAttribute("address"))
+                new_name = RINA_Name(kia.getAttribute("apName"), \
+                                     kia.getAttribute("apInstance"))
+                new_kia = Known_IPCP_Address(new_name, \
+                                             kia.getAttribute("address"))
+                new_dif.known_ipcp_addr.append(new_kia)
 
             pft = dif.getElementsByTagName("pft-conf")[0]
             if not pft == "":
-                debug("  PFT configuration: ")
-
                 pftp = pft.getElementsByTagName("pft-policy")[0]
-                debug("    pft-policy: " + pftp.getAttribute("name"))
-                debug("    version: " + pftp.getAttribute("version"))
+
+                new_pft_conf = PFT_Configuration(pftp.getAttribute("name"), \
+                                                 pftp.getAttribute("version"))
 
                 lsrc = pft.getElementsByTagName("link-state-routing-conf")[0]
-                debug("    link-state-routing-conf: ")
-                debug("      objectMaximumAge: " +
-                      lsrc.getAttribute("objectMaximumAge"))
-                debug("      waitUntilReadCDAP: " +
-                      lsrc.getAttribute("waitUntilReadCDAP"))
-                debug("      waitUntilError: " +
-                      lsrc.getAttribute("waitUntilError"))
-                debug("      waitUntilPDUFTComputation: " +
-                      lsrc.getAttribute("waitUntilPDUFTComputation"))
-                debug("      waitUntilFSODBPropagation: " +
-                      lsrc.getAttribute("waitUntilFSODBPropagation"))
-                debug("      waitUntilAgeIncrement: " +
-                      lsrc.getAttribute("waitUntilAgeIncrement"))
-                debug("      routingAlgorithm: " +
-                      lsrc.getAttribute("routingAlgorithm"))
+
+                new_lsr_conf = Link_State_Routing_Configuration( \
+                                    lsrc.getAttribute("objectMaximumAge"), \
+                                    lsrc.getAttribute("waitUntilReadCDAP"), \
+                                    lsrc.getAttribute("waitUntilError"), \
+                                    lsrc.getAttribute("waitUntilPDUFTComputation"), \
+                                    lsrc.getAttribute("waitUntilFSODBPropagation"), \
+                                    lsrc.getAttribute("waitUntilAgeIncrement"), \
+                                    lsrc.getAttribute("routingAlgorithm"))
+                new_pft_conf.lsr_conf = new_lsr_conf
+                new_dif.pft_conf = new_pft_conf
+
         difs.append(new_dif)
     debug("DIF parsing done")
 
