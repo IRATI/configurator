@@ -26,6 +26,10 @@ import tempfile
 import shutil
 import subprocess
 
+sys.path.append('@pkgpythondir@')
+
+import temp
+
 tag = "confgen"
 
 def debug(message):
