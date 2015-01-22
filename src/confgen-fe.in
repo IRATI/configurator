@@ -26,7 +26,7 @@ import xml.dom.minidom
 import argparse
 from   xml.dom.minidom import getDOMImplementation
 import os.path
-from datamodel import *
+import datamodel as dm
 
 tag = "confgen-fe"
 
@@ -153,11 +153,11 @@ try:
     nodes_d = DOM_topology.getElementsByTagName("node")
 
     for node in nodes_d:
-        new_node = Node(node.getAttribute("id"))
+        new_node = dm.Node(node.getAttribute("id"))
 
         interfaces = node.getElementsByTagName("interface")
         for interface in interfaces:
-            new_int = Interface(interface.getAttribute("id"))
+            new_int = dm.Interface(interface.getAttribute("id"))
             new_int.ip = interface.getAttribute("ip")
             new_node.interfaces.append(new_int)
 
@@ -190,9 +190,9 @@ try:
         node_n = find_node(nodes, node.getAttribute("id"))
 
         for ipcp in ipcps:
-            new_name = RINA_Name(ipcp.getAttribute("ap-name"), \
-                                 ipcp.getAttribute("ap-instance"))
-            new_ipcp = IPCP(new_name)
+            new_name = dm.RINA_Name(ipcp.getAttribute("ap-name"), \
+                                    ipcp.getAttribute("ap-instance"))
+            new_ipcp = dm.IPCP(new_name)
             new_ipcp.dif_name = ipcp.getAttribute("dif")
 
             registrations = ipcp.getElementsByTagName("register-dif")
@@ -216,10 +216,10 @@ try:
         for node in nodes_d:
             node_n = find_node(nodes, node.getAttribute("name"))
 
-            new_name = RINA_Name(app.getAttribute("ap-name"), \
-                                 app.getAttribute("ap-instance"))
+            new_name = dm.RINA_Name(app.getAttribute("ap-name"), \
+                                    app.getAttribute("ap-instance"))
 
-            new_app = App(new_name)
+            new_app = dm.App(new_name)
 
             registrations = node.getElementsByTagName("register")
             for reg in registrations:
@@ -238,7 +238,7 @@ try:
 
     difs_d = DOM_difs.getElementsByTagName("dif")
     for dif in difs_d:
-        new_dif = DIF(dif.getAttribute("id"))
+        new_dif = dm.DIF(dif.getAttribute("id"))
         new_dif.dif_type = dif.getAttribute("type")
 
         if new_dif.dif_type == "normal-ipc":
@@ -256,43 +256,43 @@ try:
                     dif.getAttribute("neighborsEnrollerPeriodInMs")
 
             dtc = dif.getElementsByTagName("data-transfer-constants")[0]
-            new_dtc = Data_Transfer_Constants(dtc.getAttribute("addressLength"), \
-                                              dtc.getAttribute("cepIdLength"), \
-                                              dtc.getAttribute("lengthLength"), \
-                                              dtc.getAttribute("portIdLength"), \
-                                              dtc.getAttribute("qosIdLength"), \
-                                              dtc.getAttribute("sequenceNumberLength"), \
-                                              dtc.getAttribute("maxPduSize"), \
-                                              dtc.getAttribute("maxPduLifetime"))
+            new_dtc = dm.Data_Transfer_Constants(dtc.getAttribute("addressLength"), \
+                                                 dtc.getAttribute("cepIdLength"), \
+                                                 dtc.getAttribute("lengthLength"), \
+                                                 dtc.getAttribute("portIdLength"), \
+                                                 dtc.getAttribute("qosIdLength"), \
+                                                 dtc.getAttribute("sequenceNumberLength"), \
+                                                 dtc.getAttribute("maxPduSize"), \
+                                                 dtc.getAttribute("maxPduLifetime"))
             new_dif.data_transfer_const = new_dtc
 
             # To be extended to include EFCP
             qoscubes = dif.getElementsByTagName("qos-cube")
             for qoscube in qoscubes:
-                new_cube = QoS_Cube(qoscube.getAttribute("id"), \
-                                    qoscube.getAttribute("name"))
+                new_cube = dm.QoS_Cube(qoscube.getAttribute("id"), \
+                                       qoscube.getAttribute("name"))
                 new_cube.part_del = qoscube.getAttribute("partialDelivery")
                 new_cube.ord_del = qoscube.getAttribute("orderedDelivery")
                 new_dif.qos_cubes.append(new_cube)
 
             kias = dif.getElementsByTagName("known-ipcp-address")
             for kia in kias:
-                new_name = RINA_Name(kia.getAttribute("apName"), \
-                                     kia.getAttribute("apInstance"))
-                new_kia = Known_IPCP_Address(new_name, \
-                                             kia.getAttribute("address"))
+                new_name = dm.RINA_Name(kia.getAttribute("apName"), \
+                                        kia.getAttribute("apInstance"))
+                new_kia = dm.Known_IPCP_Address(new_name, \
+                                                kia.getAttribute("address"))
                 new_dif.known_ipcp_addr.append(new_kia)
 
             pft = dif.getElementsByTagName("pft-conf")[0]
             if not pft == "":
                 pftp = pft.getElementsByTagName("pft-policy")[0]
 
-                new_pft_conf = PFT_Configuration(pftp.getAttribute("name"), \
-                                                 pftp.getAttribute("version"))
+                new_pft_conf = dm.PFT_Configuration(pftp.getAttribute("name"), \
+                                                    pftp.getAttribute("version"))
 
                 lsrc = pft.getElementsByTagName("link-state-routing-conf")[0]
 
-                new_lsr_conf = Link_State_Routing_Configuration( \
+                new_lsr_conf = dm.Link_State_Routing_Configuration( \
                                     lsrc.getAttribute("objectMaximumAge"), \
                                     lsrc.getAttribute("waitUntilReadCDAP"), \
                                     lsrc.getAttribute("waitUntilError"), \
