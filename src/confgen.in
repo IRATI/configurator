@@ -28,8 +28,6 @@ import subprocess
 
 sys.path.append('@pkgpythondir@')
 
-import temp
-
 tag = "confgen"
 
 def debug(message):
@@ -43,9 +41,10 @@ ipcps_filename    = "ipcps.xml"
 apps_filename     = "apps.xml"
 difs_filename     = "difs.xml"
 output_dir        = "configs"
+input_dir         = "inputs"
 
 try:
-    parser = argparse.ArgumentParser(description='@PACKAGE_NAME@ (FE)',
+    parser = argparse.ArgumentParser(description='@PACKAGE_NAME@',
                                      epilog='@PACKAGE_BUGREPORT@')
     parser.add_argument('--topology',
                         type=str,
@@ -84,7 +83,15 @@ try:
                         metavar="DIR",
                         default=[ output_dir ],
                         nargs=1,
-                        help='the output dir of the XMLs ' + \
+                        help='the output dir of the config files ' + \
+                             '(default: %(default)s)')
+
+    parser.add_argument('--input-dir',
+                        type=str,
+                        metavar="DIR",
+                        default=[ input_dir ],
+                        nargs=1,
+                        help='the input dir of the XMLs ' + \
                              '(default: %(default)s)')
 
     args = parser.parse_args()
@@ -94,6 +101,7 @@ try:
     apps_filename     = args.apps[0]
     difs_filename     = args.difs[0]
     output_dir        = args.output_dir[0]
+    input_dir         = args.input_dir[0]
 except Exception as e:
     error("Cannot parse options: " + str(e))
     sys.exit(1)
@@ -104,11 +112,14 @@ debug("  IPCPs      = " + str(ipcps_filename))
 debug("  Apps       = " + str(apps_filename))
 debug("  DIFs       = " + str(difs_filename))
 debug("  Output dir = " + str(output_dir))
+debug("  Input dir  = " + str(input_dir))
 
 try:
     tempdir = tempfile.mkdtemp()
 
     debug("Using " + tempdir + " as temporary directory")
+
+    debug("program is at" + @bindir@/confgen-fe);
 
     debug("Running step #1")
     subprocess.check_call(["@bindir@/confgen-fe",

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 #
 # Data Model for the RINA Configuration Generator (frontend)
 #
@@ -21,13 +19,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 # MA  02110-1301  USA
 
-class Interface:
+class interface:
     """ A class representing an interface """
     def __init__(self, name, ip = ""):
         self.name = name
         self.ip = ip
 
-class Node:
+class node:
     """ A class representing a node in the topology """
     def __init__(self, name):
         self.name = name
@@ -35,7 +33,7 @@ class Node:
         self.ipcps = []
         self.apps = []
 
-class RINA_Name:
+class rina_name:
     """ Represents a RINA name """
     def __init__(self, ap_name, \
                  ap_inst = "", \
@@ -46,20 +44,20 @@ class RINA_Name:
         self.ae_name = ae_name
         self.ae_inst = ae_inst
 
-class IPCP:
+class ipcp:
     """ A class that represents an IPC Process """
     def __init__(self, name, dif_name = ""):
         self.name = name
         self.dif_name = dif_name
         self.registrations = []
 
-class App:
+class app:
     """ A class representing an app in a node """
     def __init__(self, name):
         self.name = name
         self.regs = []
 
-class Data_Transfer_Constants:
+class dt_consts:
     """ A class that holds the data transfer constants of a DIF """
     def __init__(self, addr_len, cep_id_len, len_len, \
                  port_id_len, qos_id_len, seq_nr_len, \
@@ -73,7 +71,7 @@ class Data_Transfer_Constants:
         self.max_pdu_size = max_pdu_size
         self.max_pdu_lifetime = max_pdu_lifetime
 
-class QoS_Cube:
+class qos_cube:
     """ A class that represents a QoS cube """
     def __init__(self, qos_id, name, \
                  part_del = "", ord_del = ""):
@@ -82,13 +80,13 @@ class QoS_Cube:
         self.part_del = part_del
         self.ord_del = ord_del
 
-class Known_IPCP_Address:
+class ipcp_address:
     """ Holds the mapping of RINA name on address """
     def __init__(self, name, address):
         self.name = name
         self.address = address
 
-class Link_State_Routing_Configuration:
+class lsr_config:
     """ Holds parameters for Link State Routing """
     def __init__(self, obj_max_age = "", \
                  read_cdap_time = "", error_time = "", \
@@ -102,7 +100,7 @@ class Link_State_Routing_Configuration:
         self.increment_time = increment_time
         self.algorithm = algorithm
 
-class PFT_Configuration:
+class pft_conf:
     """ Class that holds the (current) PFT configuration """
     """                                                  """
     """ Has to be revised, since it is a policy          """
@@ -111,13 +109,13 @@ class PFT_Configuration:
         self.version = version
         self.lsr_conf = lsr_conf
 
-class DIF:
+class dif:
     """ A class that represents a Distributed IPC Facility """
     def __init__(self, name, dif_type = "", \
                  cdap_timeout = "", enroll_timeout = "", \
                  flow_alloc_timeout = "", watchdog_period = "", \
                  decl_dead_int = "", neigh_enroll_period = "", \
-                 data_transfer_const = "", pft_conf= ""):
+                 dt_consts = "", pft_conf= ""):
         self.name = name
         self.dif_type = dif_type
         self.cdap_timeout = cdap_timeout
@@ -126,7 +124,7 @@ class DIF:
         self.watchdog_period = watchdog_period
         self.decl_dead_int = decl_dead_int
         self.neigh_enroll_period = neigh_enroll_period
-        self.data_transfer_const = data_transfer_const
+        self.dt_consts = dt_consts
         self.qos_cubes = []
         self.known_ipcp_addr = []
         self.pft_conf = pft_conf
