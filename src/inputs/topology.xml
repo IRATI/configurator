@@ -14,10 +14,4 @@
     <to   node="n" interface="eth10"/>
   </link>
 
-
-  <link id="link1">
-    <from node="m" interface="eth11"/>
-    <to   node="n" interface="eth10"/>
-  </link>
-
 </topology>

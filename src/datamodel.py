@@ -33,6 +33,19 @@ class node:
         self.ipcps = []
         self.apps = []
 
+class link:
+    """ A class representing a link in the topology """
+    def __init__(self, id, \
+                 node_a = "", \
+                 node_b = "", \
+                 int_a = "", \
+                 int_b = ""):
+        self.id = id
+        self.node_a = node_a
+        self.node_b = node_b
+        self.int_a = int_a
+        self.int_b = int_b
+
 class rina_name:
     """ Represents a RINA name """
     def __init__(self, ap_name, \

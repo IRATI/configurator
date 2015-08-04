@@ -26,6 +26,7 @@ import xml.dom.minidom
 import argparse
 import os.path
 import datamodel as dm
+import json
 
 tag = "confgen-fe"
 
@@ -39,6 +40,7 @@ def error(message):
 
 nodes = []
 difs = []
+links = []
 
 #Auxiliary functions
 
@@ -53,6 +55,124 @@ def find_dif(difs, dif_name):
         if dif.name == dif_name:
             return dif
     raise LookupError("Could not find DIF in known DIFs list")
+
+def parse_dif(dif):
+        new_dif = dm.dif(dif.getAttribute("id"))
+        new_dif.dif_type = dif.getAttribute("type")
+
+        if new_dif.dif_type == "normal-ipc":
+            new_dif.cdap_timeout = dif.getAttribute("cdapTimeoutInMs")
+            new_dif.enroll_timeout = dif.getAttribute("enrollmentTimeoutInMs")
+            new_dif.flow_alloc_timeout = dif.getAttribute("flowAllocatorTimeoutInMs")
+            new_dif.watchdog_period = dif.getAttribute("watchdogPeriodInMs")
+            new_dif.decl_dead_int = dif.getAttribute("declaredDeadIntervalInMs")
+            new_dif.neigh_enroll_period = dif.getAttribute("neighborsEnrollerPeriodInMs")
+
+            dtc = dif.getElementsByTagName("data-transfer-constants")[0]
+            new_dtc = dm.dt_consts(dtc.getAttribute("addressLength"), \
+                                   dtc.getAttribute("cepIdLength"), \
+                                   dtc.getAttribute("lengthLength"), \
+                                   dtc.getAttribute("portIdLength"), \
+                                   dtc.getAttribute("qosIdLength"), \
+                                   dtc.getAttribute("sequenceNumberLength"), \
+                                   dtc.getAttribute("maxPduSize"), \
+                                   dtc.getAttribute("maxPduLifetime"))
+            new_dif.dt_consts = new_dtc
+
+            # To be extended to include EFCP
+            qoscubes = dif.getElementsByTagName("qos-cube")
+            for qoscube in qoscubes:
+                new_cube = dm.qos_cube(qoscube.getAttribute("id"), \
+                                       qoscube.getAttribute("name"))
+                new_cube.part_del = qoscube.getAttribute("partialDelivery")
+                new_cube.ord_del = qoscube.getAttribute("orderedDelivery")
+                new_dif.qos_cubes.append(new_cube)
+
+            kias = dif.getElementsByTagName("known-ipcp-address")
+            for kia in kias:
+                new_name = dm.rina_name(kia.getAttribute("apName"), \
+                                        kia.getAttribute("apInstance"))
+                new_kia = dm.ipcp_address(new_name, \
+                                          kia.getAttribute("address"))
+                new_dif.known_ipcp_addr.append(new_kia)
+
+            pft = dif.getElementsByTagName("pft-conf")[0]
+            if not pft == "":
+                pftp = pft.getElementsByTagName("pft-policy")[0]
+
+                new_pft_conf = dm.pft_conf(pftp.getAttribute("name"), \
+                                           pftp.getAttribute("version"))
+
+                lsrc = pft.getElementsByTagName("link-state-routing-conf")[0]
+
+                new_lsr_conf = dm.lsr_config(lsrc.getAttribute("objectMaximumAge"), \
+                                             lsrc.getAttribute("waitUntilReadCDAP"), \
+                                             lsrc.getAttribute("waitUntilError"), \
+                                             lsrc.getAttribute("waitUntilPDUFTComputation"), \
+                                             lsrc.getAttribute("waitUntilFSODBPropagation"), \
+                                             lsrc.getAttribute("waitUntilAgeIncrement"), \
+                                             lsrc.getAttribute("routingAlgorithm"))
+                new_pft_conf.lsr_conf = new_lsr_conf
+                new_dif.pft_conf = new_pft_conf
+
+        difs.append(new_dif)
+
+def parse_app(app):
+    nodes_d = app.getElementsByTagName("node")
+    for node in nodes_d:
+        node_n = find_node(nodes, node.getAttribute("name"))
+
+        new_name = dm.rina_name(app.getAttribute("ap-name"), \
+                                app.getAttribute("ap-instance"))
+
+        new_app = dm.app(new_name)
+
+        registrations = node.getElementsByTagName("register")
+        for reg in registrations:
+            new_app.regs.append(str(reg.getAttribute("dif-name")))
+
+        node_n.apps.append(new_app)
+
+def parse_ipcps(node):
+    ipcps = node.getElementsByTagName("ipcp")
+
+    node_n = find_node(nodes, node.getAttribute("id"))
+
+    for ipcp in ipcps:
+        new_name = dm.rina_name(ipcp.getAttribute("ap-name"), \
+                                ipcp.getAttribute("ap-instance"))
+        new_ipcp = dm.ipcp(new_name)
+        new_ipcp.dif_name = ipcp.getAttribute("dif")
+
+        registrations = ipcp.getElementsByTagName("register-dif")
+        for dif in registrations:
+            new_ipcp.registrations.append(str(dif.getAttribute("name")))
+
+    node_n.ipcps.append(new_ipcp)
+
+def parse_node(node):
+    new_node = dm.node(node.getAttribute("id"))
+
+    interfaces = node.getElementsByTagName("interface")
+    for interface in interfaces:
+        new_int = dm.interface(interface.getAttribute("id"))
+        new_int.ip = interface.getAttribute("ip")
+        new_node.interfaces.append(new_int)
+
+    nodes.append(new_node)
+
+def parse_link(link):
+    new_link = dm.link(link.getAttribute("id"))
+
+    a = link.getElementsByTagName("from")[0]
+    new_link.node_a = a.getAttribute("node")
+    new_link.int_a = a.getAttribute("interface")
+
+    b = link.getElementsByTagName("to")[0]
+    new_link.node_b = b.getAttribute("node")
+    new_link.int_b = b.getAttribute("interface")
+
+    links.append(new_link)
 
 #
 # Main
@@ -163,27 +283,13 @@ try:
     nodes_d = DOM_topology.getElementsByTagName("node")
 
     for node in nodes_d:
-        new_node = dm.node(node.getAttribute("id"))
+        parse_node(node)
 
-        interfaces = node.getElementsByTagName("interface")
-        for interface in interfaces:
-            new_int = dm.interface(interface.getAttribute("id"))
-            new_int.ip = interface.getAttribute("ip")
-            new_node.interfaces.append(new_int)
+    links_d = DOM_topology.getElementsByTagName("link")
 
-        nodes.append(new_node)
+    for link in links_d:
+        parse_link(link)
 
-    links = DOM_topology.getElementsByTagName("link")
-
-    debug("File has " + str(len(links)) + " link(s), walking all of them ...")
-    for link in links:
-        debug("Link: " + link.getAttribute("id"))
-        a = link.getElementsByTagName("from")[0]
-        b = link.getElementsByTagName("to")[0]
-        debug("  Connects: " + \
-              a.getAttribute("node") + ":" + a.getAttribute("interface") + \
-              " <-> " + \
-              b.getAttribute("node") + ":" + b.getAttribute("interface"))
     debug("Topology parsed successfully")
 
     DOM_ipcps = xml.dom.minidom.parse(input_dir + "/" + ipcps_filename)
@@ -194,22 +300,9 @@ try:
     assert ipcps.tagName == "ipcps"
 
     nodes_d = DOM_ipcps.getElementsByTagName("node")
+
     for node in nodes_d:
-        ipcps = node.getElementsByTagName("ipcp")
-
-        node_n = find_node(nodes, node.getAttribute("id"))
-
-        for ipcp in ipcps:
-            new_name = dm.rina_name(ipcp.getAttribute("ap-name"), \
-                                    ipcp.getAttribute("ap-instance"))
-            new_ipcp = dm.ipcp(new_name)
-            new_ipcp.dif_name = ipcp.getAttribute("dif")
-
-            registrations = ipcp.getElementsByTagName("register-dif")
-            for dif in registrations:
-                new_ipcp.registrations.append(str(dif.getAttribute("name")))
-
-            node_n.ipcps.append(new_ipcp)
+        parse_ipcps(node)
 
     debug("IPCPs parsed successfully")
 
@@ -222,21 +315,7 @@ try:
 
     apps = DOM_apps.getElementsByTagName("app")
     for app in apps:
-        nodes_d = app.getElementsByTagName("node")
-        for node in nodes_d:
-            node_n = find_node(nodes, node.getAttribute("name"))
-
-            new_name = dm.rina_name(app.getAttribute("ap-name"), \
-                                    app.getAttribute("ap-instance"))
-
-            new_app = dm.app(new_name)
-
-            registrations = node.getElementsByTagName("register")
-            for reg in registrations:
-                new_app.regs.append(str(reg.getAttribute("dif-name")))
-
-            node_n.apps.append(new_app)
-
+        parse_app(app)
     debug("Apps parsed succesfully")
 
     DOM_difs = xml.dom.minidom.parse(input_dir + "/" + difs_filename)
@@ -248,100 +327,35 @@ try:
 
     difs_d = DOM_difs.getElementsByTagName("dif")
     for dif in difs_d:
-        new_dif = dm.dif(dif.getAttribute("id"))
-        new_dif.dif_type = dif.getAttribute("type")
-
-        if new_dif.dif_type == "normal-ipc":
-            new_dif.cdap_timeout = \
-                    dif.getAttribute("cdapTimeoutInMs")
-            new_dif.enroll_timeout = \
-                    dif.getAttribute("enrollmentTimeoutInMs")
-            new_dif.flow_alloc_timeout = \
-                    dif.getAttribute("flowAllocatorTimeoutInMs")
-            new_dif.watchdog_period = \
-                    dif.getAttribute("watchdogPeriodInMs")
-            new_dif.decl_dead_int = \
-                    dif.getAttribute("declaredDeadIntervalInMs")
-            new_dif.neigh_enroll_period = \
-                    dif.getAttribute("neighborsEnrollerPeriodInMs")
-
-            dtc = dif.getElementsByTagName("data-transfer-constants")[0]
-            new_dtc = dm.dt_consts(dtc.getAttribute("addressLength"), \
-                                   dtc.getAttribute("cepIdLength"), \
-                                   dtc.getAttribute("lengthLength"), \
-                                   dtc.getAttribute("portIdLength"), \
-                                   dtc.getAttribute("qosIdLength"), \
-                                   dtc.getAttribute("sequenceNumberLength"), \
-                                   dtc.getAttribute("maxPduSize"), \
-                                   dtc.getAttribute("maxPduLifetime"))
-            new_dif.dt_consts = new_dtc
-
-            # To be extended to include EFCP
-            qoscubes = dif.getElementsByTagName("qos-cube")
-            for qoscube in qoscubes:
-                new_cube = dm.qos_cube(qoscube.getAttribute("id"), \
-                                       qoscube.getAttribute("name"))
-                new_cube.part_del = qoscube.getAttribute("partialDelivery")
-                new_cube.ord_del = qoscube.getAttribute("orderedDelivery")
-                new_dif.qos_cubes.append(new_cube)
-
-            kias = dif.getElementsByTagName("known-ipcp-address")
-            for kia in kias:
-                new_name = dm.rina_name(kia.getAttribute("apName"), \
-                                        kia.getAttribute("apInstance"))
-                new_kia = dm.ipcp_address(new_name, \
-                                          kia.getAttribute("address"))
-                new_dif.known_ipcp_addr.append(new_kia)
-
-            pft = dif.getElementsByTagName("pft-conf")[0]
-            if not pft == "":
-                pftp = pft.getElementsByTagName("pft-policy")[0]
-
-                new_pft_conf = dm.pft_conf(pftp.getAttribute("name"), \
-                                           pftp.getAttribute("version"))
-
-                lsrc = pft.getElementsByTagName("link-state-routing-conf")[0]
-
-                new_lsr_conf = dm.lsr_config(lsrc.getAttribute("objectMaximumAge"), \
-                                             lsrc.getAttribute("waitUntilReadCDAP"), \
-                                             lsrc.getAttribute("waitUntilError"), \
-                                             lsrc.getAttribute("waitUntilPDUFTComputation"), \
-                                             lsrc.getAttribute("waitUntilFSODBPropagation"), \
-                                             lsrc.getAttribute("waitUntilAgeIncrement"), \
-                                             lsrc.getAttribute("routingAlgorithm"))
-                new_pft_conf.lsr_conf = new_lsr_conf
-                new_dif.pft_conf = new_pft_conf
-
-        difs.append(new_dif)
+        parse_dif(dif)
     debug("DIF parsing done")
-
-    debug("Showing you the data model")
-
-    for node in nodes:
-        debug("Node: " + node.name)
-        for interface in node.interfaces:
-            debug("  Interface: " + interface.name + " " + interface.ip)
-
-        for ipcp in node.ipcps:
-            debug("  IPCP name: " + ipcp.name.ap_name + " " + ipcp.name.ap_inst)
-            debug("    Part of DIF: " + ipcp.dif_name)
-
-        for app in node.apps:
-            debug("  App name: " + app.name.ap_name + " " + app.name.ap_inst)
-            for reg in app.regs:
-                debug("    Registers at: " + reg)
 
     for dif in difs:
         debug("DIF name: " + dif.name)
         debug("  DIF type: " + dif.dif_type)
 
     for node in nodes:
-        f = open(os.path.join(output_dir, prefix_name + "-" + node.name + ".xml"),'w')
-        newdoc = impl.createDocument(None, "config", None)
-        root = newdoc.documentElement
-        text = newdoc.createTextNode('We all love Pippo.')
-        root.appendChild(text)
-        newdoc.writexml(f, indent="", addindent="", newl="\n")
+        dir_path = output_dir + "/" + node.name
+        debug("Putting files in " + dir_path)
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+
+        f = open(os.path.join(dir_path, prefix_name + ".conf"),'w')
+
+        str = json.dumps({"localConfiguration" : {
+            "installationPath" : "@prefix@/bin",
+            "libraryPath" : "@libdir@",
+            "logPath" : "@localstatedir@/log",
+            "consolePort" : 32766,
+            "pluginsPaths" : ["@libdir@/rinad/ipcp"]
+        }},indent=4, separators=(',', ': '))
+
+        debug(str)
+        #newdoc = impl.createDocument(None, "config", None)
+        #root = newdoc.documentElement
+        #text = newdoc.createTextNode('We all love Pippo.')
+        #root.appendChild(text)
+        #newdoc.writexml(f, indent="", addindent="", newl="\n")
 
 
 except Exception as e:
