@@ -4,7 +4,7 @@
 # Written by: Francesco Salvestrini <f DOT salvestrini AT nextworks DOT it>
 #
 
-SUBDIRS                            =
+SUBDIRS                            = inputs/
 EXTRA_DIST                         =
 DISTCLEANFILES                     =
 bin_PROGRAMS                       =
@@ -63,8 +63,6 @@ DISTCLEANFILES += confgen-be
 EXTRA_DIST     += confgen-be.in
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT += confgen-be
 
-EXTRA_DIST += apps.xml ipcps.xml topology.xml
-
 pkgpython_PYTHON =                              \
         __init__.py                             \
-        temp.py
+        datamodel.py
