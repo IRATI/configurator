@@ -1,32 +1,6 @@
 <?xml version="1.0"?>
 <difs>
-  <dif id="normal.DIF" type="normal-ipc"
-       cdapTimeoutInMs="10000" enrollmentTimeoutInMs="10000"
-       flowAllocatorTimeoutInMs="15000" watchdogPeriodInMs="60000"
-       declaredDeadIntervalInMs="120000" neighborsEnrollerPeriodInMs="10000">
-    <data-transfer-constants addressLength="2" cepIdLength="2"
-                             lengthLength="2" portIdLength="2"
-                             qosIdLength="2" sequenceNumberLength="4"
-                             maxPduSize="10000" maxPduLifetime="30" />
-    <qos-cube id="1" name="reliable" partialDelivery="false"
-              orderedDelivery="true"/>
-    <qos-cube id="2" name="unreliable" partialDelivery="true"
-              orderedDelivery="false"/>
-    <known-ipcp-address apName="test1.IRATI" apInstance="1"
-                        address="16"/>
-    <known-ipcp-address apName="test2.IRATI" apInstance="1"
-                        address="17"/>
-    <pft-conf>
-      <pft-policy name="linkState" version="0" />
-      <link-state-routing-conf objectMaximumAge="10000"
-                               waitUntilReadCDAP="5001"
-                               waitUntilError="5001"
-                               waitUntilPDUFTComputation="103"
-                               waitUntilFSODBPropagation="101"
-                               waitUntilAgeIncrement="997"
-                               routingAlgorithm="Dijkstra"/>
-    </pft-conf>
-  </dif>
+  <dif id="normal.DIF" type="normal-ipc" template="normal.dif" />
   <dif id="ip.shim" type="shim-tcp-udp"/>
   <dif id="eth.shim" type="shim-eth-vlan"/>
 </difs>

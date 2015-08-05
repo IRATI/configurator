@@ -70,74 +70,9 @@ class app:
         self.name = name
         self.reg = reg
 
-class dt_consts:
-    """ A class that holds the data transfer constants of a DIF """
-    def __init__(self, addr_len, cep_id_len, len_len, \
-                 port_id_len, qos_id_len, seq_nr_len, \
-                 max_pdu_size, max_pdu_lifetime):
-        self.addr_len = addr_len
-        self.cep_id_len = cep_id_len
-        self.len_len = len_len
-        self.port_id_len = port_id_len
-        self.qos_id_len = qos_id_len
-        self.seq_nr_len = seq_nr_len
-        self.max_pdu_size = max_pdu_size
-        self.max_pdu_lifetime = max_pdu_lifetime
-
-class qos_cube:
-    """ A class that represents a QoS cube """
-    def __init__(self, qos_id, name, \
-                 part_del = "", ord_del = ""):
-        self.qos_id = qos_id
-        self.name = name
-        self.part_del = part_del
-        self.ord_del = ord_del
-
-class ipcp_address:
-    """ Holds the mapping of RINA name on address """
-    def __init__(self, name, address):
-        self.name = name
-        self.address = address
-
-class lsr_config:
-    """ Holds parameters for Link State Routing """
-    def __init__(self, obj_max_age = "", \
-                 read_cdap_time = "", error_time = "", \
-                 recompute_time = "", repropagate_time = "", \
-                 increment_time = "", algorithm = ""):
-        self.obj_max_age = obj_max_age
-        self.read_cdap_time = read_cdap_time
-        self.error_time = error_time
-        self.recompute_time = recompute_time
-        self.repropagate_time = repropagate_time
-        self.increment_time = increment_time
-        self.algorithm = algorithm
-
-class pft_conf:
-    """ Class that holds the (current) PFT configuration """
-    """                                                  """
-    """ Has to be revised, since it is a policy          """
-    def __init__(self, name, version = "", lsr_conf = ""):
-        self.name = name
-        self.version = version
-        self.lsr_conf = lsr_conf
-
 class dif:
     """ A class that represents a Distributed IPC Facility """
-    def __init__(self, name, dif_type = "", \
-                 cdap_timeout = "", enroll_timeout = "", \
-                 flow_alloc_timeout = "", watchdog_period = "", \
-                 decl_dead_int = "", neigh_enroll_period = "", \
-                 dt_consts = "", pft_conf= ""):
+    def __init__(self, name, dif_type = "", template = ""):
         self.name = name
         self.dif_type = dif_type
-        self.cdap_timeout = cdap_timeout
-        self.enroll_timeout = enroll_timeout
-        self.flow_alloc_timeout = flow_alloc_timeout
-        self.watchdog_period = watchdog_period
-        self.decl_dead_int = decl_dead_int
-        self.neigh_enroll_period = neigh_enroll_period
-        self.dt_consts = dt_consts
-        self.qos_cubes = []
-        self.known_ipcp_addr = []
-        self.pft_conf = pft_conf
+        self.template = template

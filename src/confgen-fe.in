@@ -61,59 +61,7 @@ def parse_dif(dif):
         new_dif.dif_type = dif.getAttribute("type")
 
         if new_dif.dif_type == "normal-ipc":
-            new_dif.cdap_timeout = dif.getAttribute("cdapTimeoutInMs")
-            new_dif.enroll_timeout = dif.getAttribute("enrollmentTimeoutInMs")
-            new_dif.flow_alloc_timeout = dif.getAttribute("flowAllocatorTimeoutInMs")
-            new_dif.watchdog_period = dif.getAttribute("watchdogPeriodInMs")
-            new_dif.decl_dead_int = dif.getAttribute("declaredDeadIntervalInMs")
-            new_dif.neigh_enroll_period = dif.getAttribute("neighborsEnrollerPeriodInMs")
-
-            dtc = dif.getElementsByTagName("data-transfer-constants")[0]
-            new_dtc = dm.dt_consts(dtc.getAttribute("addressLength"), \
-                                   dtc.getAttribute("cepIdLength"), \
-                                   dtc.getAttribute("lengthLength"), \
-                                   dtc.getAttribute("portIdLength"), \
-                                   dtc.getAttribute("qosIdLength"), \
-                                   dtc.getAttribute("sequenceNumberLength"), \
-                                   dtc.getAttribute("maxPduSize"), \
-                                   dtc.getAttribute("maxPduLifetime"))
-            new_dif.dt_consts = new_dtc
-
-            # To be extended to include EFCP
-            qoscubes = dif.getElementsByTagName("qos-cube")
-            for qoscube in qoscubes:
-                new_cube = dm.qos_cube(qoscube.getAttribute("id"), \
-                                       qoscube.getAttribute("name"))
-                new_cube.part_del = qoscube.getAttribute("partialDelivery")
-                new_cube.ord_del = qoscube.getAttribute("orderedDelivery")
-                new_dif.qos_cubes.append(new_cube)
-
-            kias = dif.getElementsByTagName("known-ipcp-address")
-            for kia in kias:
-                new_name = dm.rina_name(kia.getAttribute("apName"), \
-                                        kia.getAttribute("apInstance"))
-                new_kia = dm.ipcp_address(new_name, \
-                                          kia.getAttribute("address"))
-                new_dif.known_ipcp_addr.append(new_kia)
-
-            pft = dif.getElementsByTagName("pft-conf")[0]
-            if not pft == "":
-                pftp = pft.getElementsByTagName("pft-policy")[0]
-
-                new_pft_conf = dm.pft_conf(pftp.getAttribute("name"), \
-                                           pftp.getAttribute("version"))
-
-                lsrc = pft.getElementsByTagName("link-state-routing-conf")[0]
-
-                new_lsr_conf = dm.lsr_config(lsrc.getAttribute("objectMaximumAge"), \
-                                             lsrc.getAttribute("waitUntilReadCDAP"), \
-                                             lsrc.getAttribute("waitUntilError"), \
-                                             lsrc.getAttribute("waitUntilPDUFTComputation"), \
-                                             lsrc.getAttribute("waitUntilFSODBPropagation"), \
-                                             lsrc.getAttribute("waitUntilAgeIncrement"), \
-                                             lsrc.getAttribute("routingAlgorithm"))
-                new_pft_conf.lsr_conf = new_lsr_conf
-                new_dif.pft_conf = new_pft_conf
+            new_dif.template = dif.getAttribute("template")
 
         difs.append(new_dif)
 
