@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <difs>
-  <dif id="normal.DIF" type="normal-ipc" template="normal.dif" />
+  <dif id="normal.DIF" type="normal-ipc" template="default.dif" />
   <dif id="ip.shim" type="shim-tcp-udp"/>
   <dif id="eth.shim" type="shim-eth-vlan"/>
 </difs>

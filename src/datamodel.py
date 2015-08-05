@@ -72,7 +72,9 @@ class app:
 
 class dif:
     """ A class that represents a Distributed IPC Facility """
-    def __init__(self, name, dif_type = "", template = ""):
+    def __init__(self, name, dif_type = "", \
+                 template = "", addr_count = 0):
         self.name = name
         self.dif_type = dif_type
         self.template = template
+        self.addr_count = addr_count

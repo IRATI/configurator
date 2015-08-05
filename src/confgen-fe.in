@@ -310,11 +310,12 @@ try:
                 }
                 app_to_dif.append(mapping)
 
-        ipcp_difs = []
+        ipcp_difs = {}
         ipcps = []
         for ipcp in node.ipcps:
             dif_n = find_dif(ipcp.dif_name)
-            ipcp_difs.append(dif_n)
+            # Needed for DIF templates later on
+            ipcp_difs[dif_n] = ipcp.name
             ipcp_dic = {
                 "type" : dif_n.dif_type,
                 "apName": ipcp.name.ap_name,
@@ -326,8 +327,36 @@ try:
 
         dif_confs = []
         for dif in ipcp_difs:
+            if dif.dif_type == "normal-ipc":
+                # Grab the template and update the addresses
+                template_name = dif.template
+                with open(input_dir + "/" + template_name, 'r') as r:
+                    template = json.load(r)
+
+                dif.addr_count += 1
+                debug("Assigning address: " + str(dif.addr_count))
+
+                kia = {
+                    "address" : dif.addr_count,
+                    "apInstance" : ipcp_difs[dif].ap_inst,
+                    "apName" : ipcp_difs[dif].ap_name
+                }
+
+                if "knownIPCProcessAddresses" in template:
+                    template["knownIPCProcessAddresses"].append(kia)
+                else:
+                    template["knownIPCProcessAddresses"] = [kia]
+
+                t = open(os.path.join(dir_path, template_name),'w')
+                t.write(json.dumps(template, indent=4, separators=(',', ': ')))
+                t.close()
+            elif dif.dif_type == "shim-eth-vlan":
+                debug("Do crazy shit here")
+                template_name = "some shitty name"
+
             dif_dic = {
-                "name" : dif.name
+                "name" : dif.name,
+                "template" : template_name
             }
             dif_confs.append(dif_dic)
 
@@ -338,15 +367,8 @@ try:
             "difConfigurations" : dif_confs
         }
 
-        str = json.dumps(complete_file, indent=4, separators=(',', ': '))
-
-        f.write(str)
-        #debug(str)
-        #newdoc = impl.createDocument(None, "config", None)
-        #root = newdoc.documentElement
-        #text = newdoc.createTextNode('We all love Pippo.')
-        #root.appendChild(text)
-        #newdoc.writexml(f, indent="", addindent="", newl="\n")
+        f.write(json.dumps(complete_file, indent=4, separators=(',', ': ')))
+        f.close()
 
 
 except Exception as e:
