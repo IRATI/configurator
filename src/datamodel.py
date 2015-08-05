@@ -66,9 +66,9 @@ class ipcp:
 
 class app:
     """ A class representing an app in a node """
-    def __init__(self, name):
+    def __init__(self, name, reg = ""):
         self.name = name
-        self.regs = []
+        self.reg = reg
 
 class dt_consts:
     """ A class that holds the data transfer constants of a DIF """

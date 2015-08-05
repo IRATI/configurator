@@ -27,5 +27,6 @@
                                routingAlgorithm="Dijkstra"/>
     </pft-conf>
   </dif>
-  <dif id="shim.DIF" type="shim-tcp-udp"/>
+  <dif id="ip.shim" type="shim-tcp-udp"/>
+  <dif id="eth.shim" type="shim-eth-vlan"/>
 </difs>

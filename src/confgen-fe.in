@@ -44,13 +44,13 @@ links = []
 
 #Auxiliary functions
 
-def find_node(nodes, node_name):
+def find_node(node_name):
     for node in nodes:
         if node.name == node_name:
             return node
     raise LookupError("Could not find node in known nodes list")
 
-def find_dif(difs, dif_name):
+def find_dif(dif_name):
     for dif in difs:
         if dif.name == dif_name:
             return dif
@@ -120,23 +120,24 @@ def parse_dif(dif):
 def parse_app(app):
     nodes_d = app.getElementsByTagName("node")
     for node in nodes_d:
-        node_n = find_node(nodes, node.getAttribute("name"))
+        node_n = find_node(node.getAttribute("name"))
 
         new_name = dm.rina_name(app.getAttribute("ap-name"), \
                                 app.getAttribute("ap-instance"))
 
         new_app = dm.app(new_name)
 
-        registrations = node.getElementsByTagName("register")
-        for reg in registrations:
-            new_app.regs.append(str(reg.getAttribute("dif-name")))
+        registrations = node.getElementsByTagName("register")[0]
+        new_app.reg = str(registrations.getAttribute("dif-name"))
+
+        debug("register to " + new_app.reg)
 
         node_n.apps.append(new_app)
 
 def parse_ipcps(node):
     ipcps = node.getElementsByTagName("ipcp")
 
-    node_n = find_node(nodes, node.getAttribute("id"))
+    node_n = find_node(node.getAttribute("id"))
 
     for ipcp in ipcps:
         new_name = dm.rina_name(ipcp.getAttribute("ap-name"), \
@@ -148,7 +149,7 @@ def parse_ipcps(node):
         for dif in registrations:
             new_ipcp.registrations.append(str(dif.getAttribute("name")))
 
-    node_n.ipcps.append(new_ipcp)
+        node_n.ipcps.append(new_ipcp)
 
 def parse_node(node):
     new_node = dm.node(node.getAttribute("id"))
@@ -173,6 +174,12 @@ def parse_link(link):
     new_link.int_b = b.getAttribute("interface")
 
     links.append(new_link)
+
+def cat_rina_name(name):
+      return name.ap_name + "-" + \
+          name.ap_inst + "-" + \
+          name.ae_name + "-" + \
+          name.ae_inst
 
 #
 # Main
@@ -330,10 +337,6 @@ try:
         parse_dif(dif)
     debug("DIF parsing done")
 
-    for dif in difs:
-        debug("DIF name: " + dif.name)
-        debug("  DIF type: " + dif.dif_type)
-
     for node in nodes:
         dir_path = output_dir + "/" + node.name
         debug("Putting files in " + dir_path)
@@ -342,15 +345,55 @@ try:
 
         f = open(os.path.join(dir_path, prefix_name + ".conf"),'w')
 
-        str = json.dumps({"localConfiguration" : {
-            "installationPath" : "@prefix@/bin",
-            "libraryPath" : "@libdir@",
-            "logPath" : "@localstatedir@/log",
+        local_conf =  {
+            "installationPath" : "/usr/local/irati/bin",
+            "libraryPath" : "/usr/local/irati/lib",
+            "logPath" : "/usr/local/irati/var/log",
             "consolePort" : 32766,
-            "pluginsPaths" : ["@libdir@/rinad/ipcp"]
-        }},indent=4, separators=(',', ': '))
+            "pluginsPaths" : ["/usr/local/irati/lib/rinad/ipcp"]
+        }
 
-        debug(str)
+        app_to_dif = []
+        if (node.apps != []):
+            for app in node.apps:
+                mapping = {
+                    "encodedAppName" : cat_rina_name(app.name),
+                    "difName" : app.reg
+                }
+                app_to_dif.append(mapping)
+
+        ipcp_difs = []
+        ipcps = []
+        for ipcp in node.ipcps:
+            dif_n = find_dif(ipcp.dif_name)
+            ipcp_difs.append(dif_n)
+            ipcp_dic = {
+                "type" : dif_n.dif_type,
+                "apName": ipcp.name.ap_name,
+                "apInstance" : ipcp.name.ap_inst,
+                "difName" : ipcp.dif_name,
+                "difsToRegisterAt" : ipcp.registrations
+            }
+            ipcps.append(ipcp_dic)
+
+        dif_confs = []
+        for dif in ipcp_difs:
+            dif_dic = {
+                "name" : dif.name
+            }
+            dif_confs.append(dif_dic)
+
+        complete_file = {
+            "localConfiguration" : local_conf,
+            "applicationToDIFMappings" : app_to_dif,
+            "ipcProcessesToCreate" : ipcps,
+            "difConfigurations" : dif_confs
+        }
+
+        str = json.dumps(complete_file, indent=4, separators=(',', ': '))
+
+        f.write(str)
+        #debug(str)
         #newdoc = impl.createDocument(None, "config", None)
         #root = newdoc.documentElement
         #text = newdoc.createTextNode('We all love Pippo.')
