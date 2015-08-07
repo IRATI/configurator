@@ -224,8 +224,9 @@ def wait_until_nodes_up(wall_config):
           ' -a | grep State | cut -f2,2 -d " "'
 
     active = False
-    while !active:
+    while active != True:
         res = execute_command(ops_server(wall_config), cmd, wall_config)
-        active = True if res == "active"
+        if res == "active":
+            active = True
         debug("Still waiting")
         time.sleep(3)

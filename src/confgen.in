@@ -1,7 +1,7 @@
 #!@PYTHON@
 
 #
-# RINA Configuration Generator (frontend)
+# RINA Configuration Generator
 #
 #    Francesco Salvestrini <f.salvestrini@nextworks.it>
 #    Sander Vrijders       <sander.vrijders@intec.ugent.be>
@@ -25,8 +25,10 @@ import sys
 import xml.dom.minidom
 import argparse
 import os.path
-import datamodel as dm
 import json
+import configparser
+import datamodel as dm
+import emulab_support as es
 
 sys.path.append('@pkgpythondir@')
 
@@ -44,7 +46,7 @@ nodes = []
 difs = []
 links = []
 
-#Auxiliary functions
+# Auxiliary functions
 
 def find_node(node_name):
     for node in nodes:
@@ -139,6 +141,7 @@ topology_filename = "topology.xml"
 ipcps_filename    = "ipcps.xml"
 apps_filename     = "apps.xml"
 difs_filename     = "difs.xml"
+vwall_filename    = "vwall.ini"
 output_dir        = "configs"
 input_dir         = "inputs"
 prefix_name       = "ipcm"
@@ -178,6 +181,14 @@ try:
                         help='the DIFs XML filename ' + \
                              '(default: %(default)s)')
 
+    parser.add_argument('--vwall-conf',
+                        type=str,
+                        metavar="FILE",
+                        default=[ vwall_filename ],
+                        nargs=1,
+                        help='the Virtual Wall INI filename ' + \
+                             '(default: %(default)s)')
+
     parser.add_argument('--output-dir',
                         type=str,
                         metavar="DIR",
@@ -199,7 +210,7 @@ try:
                         metavar="DIR",
                         default=[ input_dir ],
                         nargs=1,
-                        help='the input dir of the XMLs ' + \
+                        help='the input dir of the config files ' + \
                              '(default: %(default)s)')
 
     args = parser.parse_args()
@@ -208,6 +219,7 @@ try:
     ipcps_filename    = args.ipcps[0]
     apps_filename     = args.apps[0]
     difs_filename     = args.difs[0]
+    vwall_filename    = args.vwall_conf[0]
     output_dir        = args.output_dir[0]
     prefix_name       = args.prefix[0]
     input_dir         = args.input_dir[0]
@@ -220,11 +232,26 @@ debug("  Topology   = " + str(topology_filename))
 debug("  IPCPs      = " + str(ipcps_filename))
 debug("  Apps       = " + str(apps_filename))
 debug("  DIFs       = " + str(difs_filename))
+debug("  Vwall conf = " + str(vwall_filename))
 debug("  Prefix     = " + str(prefix_name))
 debug("  Output dir = " + str(output_dir))
 debug("  Input dir  = " + str(input_dir))
 
 try:
+    config = configparser.ConfigParser()
+    config.read(input_dir + '/'+ vwall_filename)
+    section_header = "vwall_config"
+
+    wall = config.get(section_header, 'wall')
+    username = config.get(section_header, 'username')
+    password = config.get(section_header, 'password')
+    proj_name = config.get(section_header, 'proj_name')
+    exp_name = config.get(section_header, 'exp_name')
+    image = config.get(section_header, 'image')
+    wall_config = es.wall_config(wall, username,
+                                 password, proj_name,
+                                 exp_name, image)
+
     impl = xml.dom.minidom.getDOMImplementation()
 
     if not os.path.exists(output_dir):
