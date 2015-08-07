@@ -32,7 +32,7 @@ AC_PATH_PROG([SORT], [sort], [/bin/false])
 AC_PATH_PROG([UNIQ], [uniq], [/bin/false])
 AC_PATH_PROG([GIT],  [git],  [/bin/false])
 
-PYTHON_VERSION_MIN="3.0.0"
+PYTHON_VERSION_MIN="3.3.0"
 AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     AX_PYTHON_MODULE([sys],,[
         AC_MSG_ERROR([Python module sys seems missing (???)])
@@ -60,6 +60,9 @@ AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     ])
     AX_PYTHON_MODULE([ast],,[
         AC_MSG_ERROR([Python module ast seems missing (???)])
+    ])
+    AX_PYTHON_MODULE([re],,[
+        AC_MSG_ERROR([Python module re seems missing (???)])
     ])
 ],[
     AC_MSG_ERROR([Python (>= $PYTHON_VERSION_MIN) seems missing])

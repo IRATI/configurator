@@ -20,7 +20,7 @@
 
 class interface:
     """ A class representing an interface """
-    def __init__(self, name, ip = ""):
+    def __init__(self, name = "", ip = ""):
         self.name = name
         self.ip = ip
 
@@ -28,7 +28,6 @@ class node:
     """ A class representing a node in the topology """
     def __init__(self, name):
         self.name = name
-        self.interfaces = []
         self.ipcps = []
         self.apps = []
 
@@ -37,8 +36,8 @@ class link:
     def __init__(self, id, \
                  node_a = "", \
                  node_b = "", \
-                 int_a = "", \
-                 int_b = ""):
+                 int_a = interface(), \
+                 int_b = interface()):
         self.id = id
         self.node_a = node_a
         self.node_b = node_b

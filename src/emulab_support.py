@@ -23,9 +23,18 @@ import socket
 import paramiko
 import time
 import os
+import re
 from ast import literal_eval
+import datamodel as dm
 
-# FIXME: To be read from a config file
+tag = "emulab-support"
+
+def debug(message):
+    print(tag + " DBG: : " + message)
+
+def error(message):
+    print(tag + " ERR: : " + message)
+
 class wall_config:
     """ A class containing the vwall configuration """
     def __init__(self, wall = "wall1.ilabt.iminds.be", \
@@ -73,19 +82,20 @@ def execute_command(hostname, command, wall_config, time_out=3):
 
     try:
         ssh_client.connect(socket.gethostbyname(hostname), 22,
-                           wall.username, wall.password,
+                           wall_config.username, wall_config.password,
                            look_for_keys=False, timeout=time_out)
-
         stdin, stdout, stderr = ssh_client.exec_command(command)
-        debug(stderr.read())
-        output = stdout.read()
-
+        err = str(stderr.read()).strip('b\'\"\\n')
+        if err != "":
+            error(err)
+        output = str(stdout.read()).strip('b\'\"\\n')
         ssh_client.close()
 
         return output
 
     except Exception as e:
-        err(str(e))
+        error(str(e))
+        return "Could not execute command"
 
 def copy_file_to_vwall(hostname, text, file_name, wall_config):
     '''
@@ -108,7 +118,9 @@ def copy_file_to_vwall(hostname, text, file_name, wall_config):
               "; chmod a+rwx " + file_name
 
         stdin, stdout, stderr = ssh_client.exec_command(cmd)
-        debug(stderr.read())
+        err = str(stderr.read()).strip('b\'\"\\n')
+        if err != "":
+            error(err)
 
         sftp_client = ssh_client.open_sftp()
         remote_file = sftp_client.open(file_name, 'w')
@@ -117,7 +129,7 @@ def copy_file_to_vwall(hostname, text, file_name, wall_config):
         remote_file.close()
 
     except Exception as e:
-        err(str(e))
+        error(str(e))
 
 def get_experiment_list(wall_config, project_name=None):
     '''
@@ -128,7 +140,7 @@ def get_experiment_list(wall_config, project_name=None):
     @return: list of created experiments (strings)
     '''
     cmd = '/usr/testbed/bin/sslxmlrpc_client.py -m experiment getlist'
-    out = execute_command(ops_server(wall_config), cmd)
+    out = execute_command(ops_server(wall_config), cmd, wall_config)
 
     try:
         if project_name != None:
@@ -148,10 +160,11 @@ def swap_exp_in(wall_config):
           wall_config.proj_name + \
           ' exp=' + \
           wall_config.exp_name + \
-          ' direction=' + \
-          direction
+          ' direction=in'
 
-    execute_command(ops_server(wall_config), cmd)
+    output = execute_command(ops_server(wall_config),
+                             cmd, wall_config)
+    return output
 
 def create_experiment(nodes, links, wall_config):
     '''
@@ -164,22 +177,27 @@ def create_experiment(nodes, links, wall_config):
     proj_name = wall_config.proj_name
     exp_name = wall_config.exp_name
 
-    exp_list = get_experiment_list()
+    exp_list = get_experiment_list(wall_config)
+
     if exp_name in exp_list[proj_name][proj_name]:
         return 'Experiment already exists'
 
-    ns = generate_ns_script(nodes, links)
+    ns = generate_ns_script(nodes, links, wall_config)
     dest_file_name = '/users/'+ wall_config.username + \
                      '/temp_ns_file.%s.ns' % os.getpid()
-    copy_file_to_vwall(ops_server(wall_config), ns, dest_file_name)
+    copy_file_to_vwall(ops_server(wall_config), ns,
+                       dest_file_name, wall_config)
 
     cmd = '/usr/testbed/bin/sslxmlrpc_client.py startexp ' + \
           'batch=false wait=true proj="' + proj_name + \
-          '" exp="' + exp_name + '" noswapin= true' + \
-          'nsfilepath="' + file_name + '"'
+          '" exp="' + exp_name + '" noswapin=true ' + \
+          'nsfilepath="' + dest_file_name + '"'
 
-    execute_command(ops_server(wall_config), cmd, time_out=None)
-    execute_command(ops_server(wall_config), 'rm ' + dest_file_name)
+    execute_command(ops_server(wall_config), cmd,
+                    wall_config, time_out=None)
+    execute_command(ops_server(wall_config),
+                    'rm ' + dest_file_name, wall_config)
+    return 'New experiment succesfully created'
 
 def generate_ns_script(nodes, links, wall_config):
     '''
@@ -214,7 +232,11 @@ def generate_ns_script(nodes, links, wall_config):
     return ns2_script
 
 def wait_until_nodes_up(wall_config):
+    '''
+    Checks if nodes are up
 
+    @param wall_config: vwall configuration data
+    '''
     debug("Waiting until all nodes are up")
 
     cmd = '/usr/testbed/bin/script_wrapper.py expinfo -e' + \
@@ -223,10 +245,63 @@ def wait_until_nodes_up(wall_config):
           wall_config.exp_name + \
           ' -a | grep State | cut -f2,2 -d " "'
 
-    active = False
+    res = execute_command(ops_server(wall_config), cmd, wall_config)
+    if res == "active":
+        active = True
     while active != True:
         res = execute_command(ops_server(wall_config), cmd, wall_config)
         if res == "active":
             active = True
         debug("Still waiting")
-        time.sleep(3)
+        time.sleep(5)
+
+def emulab_topology(nodes, links, wall_config):
+    '''
+    Gets the interface (ethx) to link mapping
+
+    @param nodes: Holds the nodes in the experiment
+    @param links: Holds the links in the experiment
+    @param wall_config: vwall configuration data
+
+    @return: nodes and links
+    '''
+
+    full_name = nodes[0].name + '.' + \
+                wall_config.exp_name + '.' + \
+                wall_config.proj_name + '.' + \
+                wall_config.wall
+    cmd = 'cat /var/emulab/boot/topomap'
+    topomap = execute_command(full_name, cmd, wall_config)
+    # Almost as ugly as yo momma
+    index = topomap.rfind("# lans")
+    topo_array = topomap[:index].split('\\n')[1:-1]
+    # Array contains things like 'r2b1,link7:10.1.6.3 link6:10.1.5.3'
+    for item in topo_array:
+        item_array = re.split(',? ?', item)
+        node_name = item_array[0]
+        for item2 in item_array[1:]:
+            item2 = item2.split(':')
+            link_name = item2[0]
+            link_ip = item2[1]
+            for link in links:
+                if link.id == link_name:
+                    if link.node_a == node_name:
+                        link.int_a.ip = link_ip
+                    elif link.node_b == node_name:
+                        link.int_b.ip = link_ip
+
+    for node in nodes:
+        cmd = 'cat /var/emulab/boot/ifmap'
+        full_name = node.name + '.' + \
+                    wall_config.exp_name + '.' + \
+                    wall_config.proj_name + '.' + \
+                    wall_config.wall
+        output = execute_command(full_name, cmd, wall_config)
+        output = output.split()
+        for link in links:
+            if link.node_a == node.name and \
+               link.int_a.ip == output[1]:
+                link.int_a.name = output[0]
+            elif link.node_b == node.name and \
+               link.int_b.ip == output[1]:
+                link.int_b.name =  output[0]
