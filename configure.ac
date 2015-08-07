@@ -32,7 +32,7 @@ AC_PATH_PROG([SORT], [sort], [/bin/false])
 AC_PATH_PROG([UNIQ], [uniq], [/bin/false])
 AC_PATH_PROG([GIT],  [git],  [/bin/false])
 
-PYTHON_VERSION_MIN="2.7.3"
+PYTHON_VERSION_MIN="3.0.0"
 AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
     AX_PYTHON_MODULE([sys],,[
         AC_MSG_ERROR([Python module sys seems missing (???)])
@@ -41,22 +41,25 @@ AM_PATH_PYTHON([$PYTHON_VERSION_MIN],[
         AC_MSG_ERROR([Python module os seems missing (???)])
     ])
     AX_PYTHON_MODULE([argparse],,[
-        AC_MSG_WARN([Python module arparse seems missing (???)])
+        AC_MSG_ERROR([Python module arparse seems missing (???)])
     ])
     AX_PYTHON_MODULE([xml.dom.minidom],,[
-        AC_MSG_WARN([Python module xml.dom.minidom seems missing (???)])
+        AC_MSG_ERROR([Python module xml.dom.minidom seems missing (???)])
     ])
-    AX_PYTHON_MODULE([xml.sax],,[
-        AC_MSG_WARN([Python module xml.sax seems missing (???)])
+    AX_PYTHON_MODULE([json],,[
+        AC_MSG_ERROR([Python module json seems missing (???)])
     ])
-    AX_PYTHON_MODULE([tempfile],,[
-        AC_MSG_WARN([Python module tempfile seems missing (???)])
+    AX_PYTHON_MODULE([socket],,[
+        AC_MSG_ERROR([Python module socket seems missing (???)])
     ])
-    AX_PYTHON_MODULE([shutil],,[
-        AC_MSG_WARN([Python module shutil seems missing (???)])
+    AX_PYTHON_MODULE([paramiko],,[
+        AC_MSG_ERROR([Python module paramiko seems missing (???)])
     ])
-    AX_PYTHON_MODULE([subprocess],,[
-        AC_MSG_WARN([Python module subprocess seems missing (???)])
+    AX_PYTHON_MODULE([time],,[
+        AC_MSG_ERROR([Python module time seems missing (???)])
+    ])
+    AX_PYTHON_MODULE([ast],,[
+        AC_MSG_ERROR([Python module ast seems missing (???)])
     ])
 ],[
     AC_MSG_ERROR([Python (>= $PYTHON_VERSION_MIN) seems missing])

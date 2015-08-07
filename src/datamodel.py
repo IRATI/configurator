@@ -1,7 +1,6 @@
 #
-# Data Model for the RINA Configuration Generator (frontend)
+# Data Model for the RINA Configuration Generator
 #
-#    Francesco Salvestrini <f.salvestrini@nextworks.it>
 #    Sander Vrijders       <sander.vrijders@intec.ugent.be>
 #
 # This library is free software; you can redistribute it and/or
