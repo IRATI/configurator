@@ -48,6 +48,13 @@ difs = []
 links = []
 templates = {}
 template_locs = collections.defaultdict(list)
+vlan_count = 2
+dif_to_vlan = {}
+
+# string literals
+
+normal_ipcp = "normal-ipc"
+shim_eth_vlan = "shim-eth-vlan"
 
 # Auxiliary functions
 
@@ -59,16 +66,29 @@ def find_node(node_name):
 
 def find_dif(dif_name):
     for dif in difs:
-        if dif.name == dif_name:
+        if str(dif.name) == str(dif_name):
             return dif
     raise LookupError("Could not find DIF in known DIFs list")
+
+def find_link(link_name):
+    for link in links:
+        if link.id == link_name:
+            return link
+    raise LookupError("Could not find link in links list")
 
 def parse_dif(dif):
         new_dif = dm.dif(dif.getAttribute("id"))
         new_dif.dif_type = dif.getAttribute("type")
 
-        if new_dif.dif_type == "normal-ipc":
+        if new_dif.dif_type == normal_ipcp:
             new_dif.template = dif.getAttribute("template")
+        elif new_dif.dif_type == shim_eth_vlan:
+            global vlan_count
+            dif_to_vlan[new_dif.name] = vlan_count
+            debug("Assigning VLAN " + str(vlan_count))
+            new_dif.name = str(vlan_count)
+            vlan_count += 1
+            new_dif.link = dif.getAttribute("link")
 
         difs.append(new_dif)
 
@@ -100,7 +120,8 @@ def parse_ipcps(node):
 
         registrations = ipcp.getElementsByTagName("register-dif")
         for dif in registrations:
-            new_ipcp.registrations.append(str(dif.getAttribute("name")))
+            dif_name = str(dif.getAttribute("name"))
+            new_ipcp.registrations.append(str(dif_name))
 
         node_n.ipcps.append(new_ipcp)
 
@@ -189,6 +210,15 @@ def parse_xml_files():
         parse_dif(dif)
     debug("DIF parsing done")
 
+    for node in nodes:
+        for ipcp in node.ipcps:
+            if ipcp.dif_name in dif_to_vlan:
+                ipcp.dif_name = str(dif_to_vlan[ipcp.dif_name])
+            for dif in ipcp.registrations:
+                if dif in dif_to_vlan:
+                    index = ipcp.registrations.index(dif)
+                    ipcp.registrations[index] = str(dif_to_vlan[dif])
+
 def gen_ipcm_configs():
     for node in nodes:
         dir_path = output_dir + "/" + node.name
@@ -220,7 +250,7 @@ def gen_ipcm_configs():
         for ipcp in node.ipcps:
             dif_n = find_dif(ipcp.dif_name)
             # Needed for DIF templates later on
-            ipcp_difs[dif_n] = ipcp.name
+            ipcp_difs[dif_n] = ipcp
             ipcp_dic = {
                 "type" : dif_n.dif_type,
                 "apName": ipcp.name.ap_name,
@@ -228,11 +258,12 @@ def gen_ipcm_configs():
                 "difName" : ipcp.dif_name,
                 "difsToRegisterAt" : ipcp.registrations
             }
+
             ipcps.append(ipcp_dic)
 
         dif_confs = []
         for dif in ipcp_difs:
-            if dif.dif_type == "normal-ipc":
+            if dif.dif_type == normal_ipcp:
                 # Grab the template and update the addresses
                 template_name = dif.template
 
@@ -250,8 +281,8 @@ def gen_ipcm_configs():
 
                 kia = {
                     "address" : dif.addr_count,
-                    "apInstance" : ipcp_difs[dif].ap_inst,
-                    "apName" : ipcp_difs[dif].ap_name
+                    "apInstance" : ipcp_difs[dif].name.ap_inst,
+                    "apName" : ipcp_difs[dif].name.ap_name
                 }
 
                 if "knownIPCProcessAddresses" in template:
@@ -262,9 +293,23 @@ def gen_ipcm_configs():
                 template_locs[template_name].append(dir_path)
 
 
-            elif dif.dif_type == "shim-eth-vlan":
-                debug("Do crazy shit here")
-                template_name = "some shitty name"
+            elif dif.dif_type == shim_eth_vlan:
+                link_n = find_link(dif.link)
+                template_name = shim_eth_vlan + "-" + \
+                                str(dif.name) + ".dif"
+                if link_n.node_a == node.name:
+                    int_name = link_n.int_a.name
+                else:
+                    int_name = link_n.int_b.name
+                template = {
+                    "difType" : shim_eth_vlan,
+                    "configParameters" : {
+                        "interface-name" : int_name
+                    }
+                }
+                with open(os.path.join(dir_path, template_name),'w') as s:
+                    s.write(json.dumps(template, indent=4, \
+                                       separators=(',', ': ')))
 
             dif_dic = {
                 "name" : dif.name,
@@ -286,6 +331,7 @@ def gen_ipcm_configs():
             t = open(os.path.join(loc, template_name),'w')
             t.write(json.dumps(templates[template_name],
                                indent=4, separators=(',', ': ')))
+            t.close()
 
 def parse_wall_conf():
     config = configparser.ConfigParser()
@@ -303,6 +349,39 @@ def parse_wall_conf():
                                  exp_name, image)
     return wall_config
 
+def setup_vlans(wall_conf):
+    for node in nodes:
+        for ipcp in node.ipcps:
+            dif_n = find_dif(str(ipcp.dif_name))
+            if dif_n.dif_type == shim_eth_vlan:
+                link_n = find_link(dif_n.link)
+                if link_n.node_a == node.name:
+                    int_name = link_n.int_a.name
+                else:
+                    int_name = link_n.int_b.name
+                es.setup_vlan(node.name, dif_n.name, \
+                              int_name, wall_conf)
+
+def copy_confs_to_vwall(wall_conf):
+    for node in nodes:
+        dir_path = output_dir + "/" + node.name
+        for f in os.listdir(dir_path):
+            file_name = os.path.join(dir_path, f)
+            if os.path.isfile(file_name):
+                debug("File is " + f)
+                with open(file_name, 'r') as fh:
+                    full_name = es.full_name(node.name, wall_conf)
+                    es.copy_file_to_vwall(full_name, fh.read(), \
+                                          f, wall_conf)
+                    cmd = "sudo mv " + f + " @prefix@/etc/"
+                    es.execute_command(full_name, cmd, wall_conf)
+
+def start_ipcms(wall_conf):
+    for node in nodes:
+        full_name = es.full_name(node.name, wall_conf)
+        cmd = "sudo nohup sudo @prefix@/bin/ipcm"
+        es.execute_command(full_name, cmd, wall_conf)
+
 #
 # Main
 #
@@ -314,7 +393,7 @@ difs_filename     = "difs.xml"
 vwall_filename    = "vwall.ini"
 output_dir        = "configs"
 input_dir         = "inputs"
-prefix_name       = "ipcm"
+prefix_name       = "ipcmanager"
 
 try:
     parser = argparse.ArgumentParser(description='@PACKAGE_NAME@',
@@ -416,7 +495,13 @@ try:
     es.wait_until_nodes_up(wall_conf)
     es.emulab_topology(nodes, links, wall_conf)
 
+    es.insert_mods(nodes, wall_conf)
+    setup_vlans(wall_conf)
+
     gen_ipcm_configs()
+    copy_confs_to_vwall(wall_conf)
+
+    start_ipcms(wall_conf)
 
 except Exception as e:
     error("Got a problem: " + str(e))

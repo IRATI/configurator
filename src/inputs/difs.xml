@@ -2,5 +2,5 @@
 <difs>
   <dif id="normal.DIF" type="normal-ipc" template="default.dif" />
   <dif id="ip.shim" type="shim-tcp-udp"/>
-  <dif id="eth.shim" type="shim-eth-vlan"/>
+  <dif id="eth.shim" type="shim-eth-vlan" link="link0"/>
 </difs>

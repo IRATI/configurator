@@ -57,6 +57,19 @@ def ops_server(wall_config):
     '''
     return 'ops.' + wall_config.wall
 
+def full_name(node_name, wall_config):
+    '''
+    Return server name of a node
+
+    @param node_name: name of the node
+    @param wall_config: vwall configuration data
+    @return: server name of the node
+    '''
+    return node_name + '.' + \
+        wall_config.exp_name + '.' + \
+        wall_config.proj_name + '.' + \
+        wall_config.wall
+
 def get_ssh_client():
     ssh_client = paramiko.SSHClient()
     ssh_client.load_system_host_keys()
@@ -64,7 +77,7 @@ def get_ssh_client():
 
     return ssh_client
 
-def execute_command(hostname, command, wall_config, time_out=3):
+def execute_command(hostname, command, wall_config, time_out = 3):
     '''
     Remote execution of a list of shell command on hostname. By
     default this function will exit (timeout) after 3 seconds.
@@ -101,6 +114,7 @@ def copy_file_to_vwall(hostname, text, file_name, wall_config):
     '''
     Write a string to a given remote file.
     Overwrite the complete file if it already exists!
+
     @param hostname: host name or ip address of the node
     @param text: string to be written in file
     @param file_name: file name (including full path) on the host
@@ -266,12 +280,9 @@ def emulab_topology(nodes, links, wall_config):
     @return: nodes and links
     '''
 
-    full_name = nodes[0].name + '.' + \
-                wall_config.exp_name + '.' + \
-                wall_config.proj_name + '.' + \
-                wall_config.wall
+    node_full_name = full_name(nodes[0].name, wall_config)
     cmd = 'cat /var/emulab/boot/topomap'
-    topomap = execute_command(full_name, cmd, wall_config)
+    topomap = execute_command(node_full_name, cmd, wall_config)
     # Almost as ugly as yo momma
     index = topomap.rfind("# lans")
     topo_array = topomap[:index].split('\\n')[1:-1]
@@ -292,11 +303,8 @@ def emulab_topology(nodes, links, wall_config):
 
     for node in nodes:
         cmd = 'cat /var/emulab/boot/ifmap'
-        full_name = node.name + '.' + \
-                    wall_config.exp_name + '.' + \
-                    wall_config.proj_name + '.' + \
-                    wall_config.wall
-        output = execute_command(full_name, cmd, wall_config)
+        node_full_name  = full_name(node.name, wall_config)
+        output = execute_command(node_full_name, cmd, wall_config)
         output = output.split()
         for link in links:
             if link.node_a == node.name and \
@@ -305,3 +313,48 @@ def emulab_topology(nodes, links, wall_config):
             elif link.node_b == node.name and \
                link.int_b.ip == output[1]:
                 link.int_b.name =  output[0]
+
+
+def setup_vlan(node_name, vlan_id, int_name, wall_config):
+    '''
+    Gets the interface (ethx) to link mapping
+
+    @param node_name: The node to create the VLAN on
+    @param vlan_id: The VLAN id
+    @param int_name: The name of the interface
+    @param wall_config: vwall configuration data
+    '''
+
+    node_full_name = full_name(node_name, wall_config)
+    cmd = "sudo ip link add link " + \
+          str(int_name) + \
+          " name " + str(int_name) + \
+          "." + str(vlan_id) + \
+          " type vlan id " + str(vlan_id)
+    execute_command(node_full_name, cmd, wall_config)
+    cmd = "sudo ifconfig " + \
+          str(int_name) + "." + \
+          str(vlan_id) + " up"
+    execute_command(node_full_name, cmd, wall_config)
+    cmd = "sudo ethtool -K " + \
+          str(int_name) + " rxvlan off"
+    execute_command(node_full_name, cmd, wall_config)
+    cmd = "sudo ethtool -K " + \
+          str(int_name) + " txvlan off"
+    execute_command(node_full_name, cmd, wall_config)
+
+def insert_mods(nodes, wall_config):
+    '''
+    Insert the linux kernel modules of IRATI
+
+    @param nodes: Holds the nodes in the experiment
+    @param wall_config: vwall configuration data
+    '''
+    for node in nodes:
+        node_full_name = full_name(node.name, wall_config)
+        cmd = "sudo modprobe shim-eth-vlan"
+        execute_command(node_full_name, cmd, wall_config)
+        cmd = "sudo modprobe normal-ipcp"
+        execute_command(node_full_name, cmd, wall_config)
+        cmd = "sudo modprobe rina-default-plugin"
+        execute_command(node_full_name, cmd, wall_config)

@@ -2,13 +2,13 @@
 <ipcps>
   <node id="m">
     <ipcp ap-name="ipcp.a" ap-instance="1" dif="normal.DIF">
-      <register-dif name="shim.DIF" />
+      <register-dif name="eth.shim" />
     </ipcp>
     <ipcp ap-name="test-eth" ap-instance="1" dif="eth.shim"/>
   </node>
   <node id="n">
     <ipcp ap-name="ipcp.b" ap-instance="1" dif="normal.DIF">
-      <register-dif name="shim.DIF" />
+      <register-dif name="eth.shim" />
     </ipcp>
     <ipcp ap-name="test-eth" ap-instance="1" dif="eth.shim"/>
   </node>
