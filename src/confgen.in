@@ -259,10 +259,6 @@ def gen_ipcm_configs():
                 "difsToRegisterAt" : ipcp.registrations
             }
 
-            if dif_n.dif_type == shim_eth_vlan:
-                ipcp_dic["apName"] = ipcp.name.ap_name + \
-                                     str(dif_n.name)
-
             ipcps.append(ipcp_dic)
 
         dif_confs = []
