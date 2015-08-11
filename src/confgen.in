@@ -259,6 +259,10 @@ def gen_ipcm_configs():
                 "difsToRegisterAt" : ipcp.registrations
             }
 
+            if dif_n.dif_type == shim_eth_vlan:
+                ipcp_dic["apName"] = ipcp.name.ap_name + \
+                                     str(dif_n.name)
+
             ipcps.append(ipcp_dic)
 
         dif_confs = []
@@ -364,6 +368,7 @@ def setup_vlans(wall_conf):
 
 def copy_confs_to_vwall(wall_conf):
     for node in nodes:
+        debug("Copying files to vwall for node " + node.name)
         dir_path = output_dir + "/" + node.name
         for f in os.listdir(dir_path):
             file_name = os.path.join(dir_path, f)
@@ -378,8 +383,9 @@ def copy_confs_to_vwall(wall_conf):
 
 def start_ipcms(wall_conf):
     for node in nodes:
+        debug("Starting IPCM on node " + node.name)
         full_name = es.full_name(node.name, wall_conf)
-        cmd = "sudo nohup sudo @prefix@/bin/ipcm"
+        cmd = 'nohup sudo @prefix@/bin/ipcm >/dev/null 2>&1 &'
         es.execute_command(full_name, cmd, wall_conf)
 
 #
@@ -495,8 +501,8 @@ try:
     es.wait_until_nodes_up(wall_conf)
     es.emulab_topology(nodes, links, wall_conf)
 
-    es.insert_mods(nodes, wall_conf)
     setup_vlans(wall_conf)
+    es.insert_mods(nodes, wall_conf)
 
     gen_ipcm_configs()
     copy_confs_to_vwall(wall_conf)
