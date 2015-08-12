@@ -73,6 +73,7 @@ AC_CONFIG_FILES([
 
     src/Makefile
     src/inputs/Makefile
+    src/inputs/2nodes/Makefile
 ])
 
 AC_OUTPUT
