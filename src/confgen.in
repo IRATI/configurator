@@ -394,7 +394,7 @@ apps_filename     = "apps.xml"
 difs_filename     = "difs.xml"
 vwall_filename    = "vwall.ini"
 output_dir        = "configs"
-input_dir         = "inputs"
+input_dir         = "inputs/2nodes"
 prefix_name       = "ipcmanager"
 
 try:
