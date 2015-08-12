@@ -4,7 +4,7 @@
 # Written by: Sander Vrijders <sander DOT vrijders AT intec DOT ugent DOT be>
 #
 
-SUBDIRS                            = 2nodes
+SUBDIRS                            = 2nodes datnet
 EXTRA_DIST                         =
 DISTCLEANFILES                     =
 bin_PROGRAMS                       =

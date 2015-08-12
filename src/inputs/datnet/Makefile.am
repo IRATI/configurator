@@ -11,5 +11,5 @@ bin_PROGRAMS                       =
 bin_SCRIPTS                        =
 AM_INSTALLCHECK_STD_OPTIONS_EXEMPT =
 
-EXTRA_DIST += apps.xml ipcps.xml topology.xml \
-	      difs.xml vwall.ini default.dif
+EXTRA_DIST += apps.xml ipcps.xml topology.xml difs.xml \
+	      vwall.ini dc.dif tenant1.dif tenant2.dif

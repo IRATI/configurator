@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<difs>
+  <dif id="dc" type="normal-ipc" template="dc.dif" />
+  <dif id="tenant1" type="normal-ipc" template="tenant1.dif" />
+  <dif id="tenant2" type="normal-ipc" template="tenant2.dif" />
+  <dif id="eth.shim0" type="shim-eth-vlan" link="link0"/>
+  <dif id="eth.shim1" type="shim-eth-vlan" link="link1"/>
+  <dif id="eth.shim2" type="shim-eth-vlan" link="link2"/>
+  <dif id="eth.shim3" type="shim-eth-vlan" link="link3"/>
+  <dif id="eth.shim4" type="shim-eth-vlan" link="link4"/>
+  <dif id="eth.shim5" type="shim-eth-vlan" link="link5"/>
+  <dif id="eth.shim6" type="shim-eth-vlan" link="link6"/>
+  <dif id="eth.shim7" type="shim-eth-vlan" link="link7"/>
+  <dif id="eth.shim8" type="shim-eth-vlan" link="link8"/>
+  <dif id="eth.shim9" type="shim-eth-vlan" link="link9"/>
+  <dif id="eth.shim10" type="shim-eth-vlan" link="link10"/>
+  <dif id="eth.shim11" type="shim-eth-vlan" link="link11"/>
+  <dif id="eth.shim12" type="shim-eth-vlan" link="link12"/>
+  <dif id="eth.shim13" type="shim-eth-vlan" link="link13"/>
+  <dif id="eth.shim14" type="shim-eth-vlan" link="link14"/>
+  <dif id="eth.shim15" type="shim-eth-vlan" link="link15"/>
+  <dif id="eth.shim16" type="shim-eth-vlan" link="link16"/>
+  <dif id="eth.shim17" type="shim-eth-vlan" link="link17"/>
+  <dif id="eth.shim18" type="shim-eth-vlan" link="link18"/>
+  <dif id="eth.shim19" type="shim-eth-vlan" link="link19"/>
+  <dif id="eth.shim20" type="shim-eth-vlan" link="link20"/>
+  <dif id="eth.shim21" type="shim-eth-vlan" link="link21"/>
+  <dif id="eth.shim22" type="shim-eth-vlan" link="link22"/>
+  <dif id="eth.shim23" type="shim-eth-vlan" link="link23"/>
+</difs>

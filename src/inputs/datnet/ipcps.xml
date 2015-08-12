@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<ipcps>
+  <node id="vm1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
+    <ipcp ap-name="vm1" ap-instance="1" dif="tenant1">
+      <register-dif name="eth.shim0"/>
+    </ipcp>
+  </node>
+  <node id="vm2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim1"/>
+    <ipcp ap-name="vm2" ap-instance="1" dif="tenant1">
+      <register-dif name="eth.shim1"/>
+    </ipcp>
+  </node>
+  <node id="vm3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim2"/>
+    <ipcp ap-name="vm3" ap-instance="1" dif="tenant2">
+      <register-dif name="eth.shim2"/>
+    </ipcp>
+  </node>
+  <node id="vm4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim3"/>
+    <ipcp ap-name="vm4" ap-instance="1" dif="tenant2">
+      <register-dif name="eth.shim3"/>
+    </ipcp>
+  </node>
+
+  <node id="server1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim4"/>
+    <ipcp ap-name="server1" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim0"/>
+      <register-dif name="eth.shim4"/>
+    </ipcp>
+    <ipcp ap-name="server1.tenant1" ap-instance="1" dif="tenant1">
+      <register-dif name="dc"/>
+    </ipcp>
+  </node>
+  <node id="server2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim1"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim5"/>
+    <ipcp ap-name="server2" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim1"/>
+      <register-dif name="eth.shim5"/>
+    </ipcp>
+    <ipcp ap-name="server2.tenant1" ap-instance="1" dif="tenant1">
+      <register-dif name="dc"/>
+    </ipcp>
+  </node>
+  <node id="server3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim2"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim6"/>
+    <ipcp ap-name="server3" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim2"/>
+      <register-dif name="eth.shim6"/>
+    </ipcp>
+    <ipcp ap-name="server3.tenant2" ap-instance="1" dif="tenant2">
+      <register-dif name="dc"/>
+    </ipcp>
+  </node>
+  <node id="server4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim3"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim7"/>
+    <ipcp ap-name="server4" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim3"/>
+      <register-dif name="eth.shim7"/>
+    </ipcp>
+    <ipcp ap-name="server4.tenant2" ap-instance="1" dif="tenant2">
+      <register-dif name="dc"/>
+    </ipcp>
+  </node>
+
+  <node id="edge1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim4"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim5"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim8"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim9"/>
+    <ipcp ap-name="edge1" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim4"/>
+      <register-dif name="eth.shim5"/>
+      <register-dif name="eth.shim8"/>
+      <register-dif name="eth.shim9"/>
+    </ipcp>
+  </node>
+  <node id="edge2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim10"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim11"/>
+    <ipcp ap-name="edge2" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim10"/>
+      <register-dif name="eth.shim11"/>
+    </ipcp>
+  </node>
+  <node id="edge3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim12"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim13"/>
+    <ipcp ap-name="edge3" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim12"/>
+      <register-dif name="eth.shim13"/>
+    </ipcp>
+  </node>
+  <node id="edge4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim6"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim7"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim14"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim15"/>
+    <ipcp ap-name="edge4" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim6"/>
+      <register-dif name="eth.shim7"/>
+      <register-dif name="eth.shim14"/>
+      <register-dif name="eth.shim15"/>
+    </ipcp>
+  </node>
+
+  <node id="agg1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim8"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim10"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim16"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim17"/>
+    <ipcp ap-name="agg1" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim8"/>
+      <register-dif name="eth.shim10"/>
+      <register-dif name="eth.shim16"/>
+      <register-dif name="eth.shim17"/>
+    </ipcp>
+  </node>
+  <node id="agg2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim9"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim11"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim18"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim19"/>
+    <ipcp ap-name="agg2" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim9"/>
+      <register-dif name="eth.shim11"/>
+      <register-dif name="eth.shim18"/>
+      <register-dif name="eth.shim19"/>
+    </ipcp>
+  </node>
+  <node id="agg3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim12"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim14"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim20"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim21"/>
+    <ipcp ap-name="agg3" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim12"/>
+      <register-dif name="eth.shim14"/>
+      <register-dif name="eth.shim20"/>
+      <register-dif name="eth.shim21"/>
+    </ipcp>
+  </node>
+  <node id="agg4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim13"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim15"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim22"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim23"/>
+       <ipcp ap-name="agg4" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim13"/>
+      <register-dif name="eth.shim15"/>
+      <register-dif name="eth.shim22"/>
+      <register-dif name="eth.shim23"/>
+    </ipcp>
+  </node>
+
+  <node id="core1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim16"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim18"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim20"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim22"/>
+    <ipcp ap-name="core1" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim16"/>
+      <register-dif name="eth.shim18"/>
+      <register-dif name="eth.shim20"/>
+      <register-dif name="eth.shim22"/>
+    </ipcp>
+    <ipcp ap-name="core1.tenant1" ap-instance="1" dif="tenant1">
+      <register-dif name="dc"/>
+    </ipcp>
+  </node>
+  <node id="core2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim17"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim19"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim21"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim23"/>
+    <ipcp ap-name="core2" ap-instance="1" dif="dc">
+      <register-dif name="eth.shim17"/>
+      <register-dif name="eth.shim19"/>
+      <register-dif name="eth.shim21"/>
+      <register-dif name="eth.shim23"/>
+    </ipcp>
+    <ipcp ap-name="core2.tenant2" ap-instance="1" dif="tenant2">
+      <register-dif name="dc"/>
+    </ipcp>
+  </node>
+</ipcps>

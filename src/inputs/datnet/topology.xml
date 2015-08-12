@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<topology>
+
+  <node id="vm1"/>
+  <node id="vm2"/>
+  <node id="vm3"/>
+  <node id="vm4"/>
+
+  <node id="server1"/>
+  <node id="server2"/>
+  <node id="server3"/>
+  <node id="server4"/>
+
+  <node id="edge1"/>
+  <node id="edge2"/>
+  <node id="edge3"/>
+  <node id="edge4"/>
+
+  <node id="agg1"/>
+  <node id="agg2"/>
+  <node id="agg3"/>
+  <node id="agg4"/>
+
+  <node id="core1"/>
+  <node id="core2"/>
+
+  <link id="link0">
+    <from node="vm1"/>
+    <to   node="server1"/>
+  </link>
+
+  <link id="link1">
+    <from node="vm2"/>
+    <to   node="server2"/>
+  </link>
+
+  <link id="link2">
+    <from node="vm3"/>
+    <to   node="server3"/>
+  </link>
+
+  <link id="link3">
+    <from node="vm4"/>
+    <to   node="server4"/>
+  </link>
+
+  <link id="link4">
+    <from node="server1"/>
+    <to   node="edge1"/>
+  </link>
+
+  <link id="link5">
+    <from node="server2"/>
+    <to   node="edge1"/>
+  </link>
+
+  <link id="link6">
+    <from node="server3"/>
+    <to   node="edge4"/>
+  </link>
+
+  <link id="link7">
+    <from node="server4"/>
+    <to   node="edge4"/>
+  </link>
+
+  <link id="link8">
+    <from node="edge1"/>
+    <to   node="agg1"/>
+  </link>
+
+  <link id="link9">
+    <from node="edge1"/>
+    <to   node="agg2"/>
+  </link>
+
+  <link id="link10">
+    <from node="edge2"/>
+    <to   node="agg1"/>
+  </link>
+
+  <link id="link11">
+    <from node="edge2"/>
+    <to   node="agg2"/>
+  </link>
+
+  <link id="link12">
+    <from node="edge3"/>
+    <to   node="agg3"/>
+  </link>
+
+  <link id="link13">
+    <from node="edge3"/>
+    <to   node="agg4"/>
+  </link>
+
+  <link id="link14">
+    <from node="edge4"/>
+    <to   node="agg3"/>
+  </link>
+
+  <link id="link15">
+    <from node="edge4"/>
+    <to   node="agg4"/>
+  </link>
+
+  <link id="link16">
+    <from node="agg1"/>
+    <to   node="core1"/>
+  </link>
+
+  <link id="link17">
+    <from node="agg1"/>
+    <to   node="core2"/>
+  </link>
+
+  <link id="link18">
+    <from node="agg2"/>
+    <to   node="core1"/>
+  </link>
+
+  <link id="link19">
+    <from node="agg2"/>
+    <to   node="core2"/>
+  </link>
+
+  <link id="link20">
+    <from node="agg3"/>
+    <to   node="core1"/>
+  </link>
+
+  <link id="link21">
+    <from node="agg3"/>
+    <to   node="core2"/>
+  </link>
+
+  <link id="link22">
+    <from node="agg4"/>
+    <to   node="core1"/>
+  </link>
+
+  <link id="link23">
+    <from node="agg4"/>
+    <to   node="core2"/>
+  </link>
+
+</topology>
