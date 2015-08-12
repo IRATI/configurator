@@ -139,6 +139,9 @@ def parse_link(link):
     b = link.getElementsByTagName("to")[0]
     new_link.node_b = b.getAttribute("node")
 
+    new_link.int_a = dm.interface()
+    new_link.int_b = dm.interface()
+
     links.append(new_link)
 
 def cat_rina_name(name):

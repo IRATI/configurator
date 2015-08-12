@@ -260,6 +260,7 @@ def wait_until_nodes_up(wall_config):
           ' -a | grep State | cut -f2,2 -d " "'
 
     res = execute_command(ops_server(wall_config), cmd, wall_config)
+    active = False
     if res == "active":
         active = True
     while active != True:
@@ -276,8 +277,6 @@ def emulab_topology(nodes, links, wall_config):
     @param nodes: Holds the nodes in the experiment
     @param links: Holds the links in the experiment
     @param wall_config: vwall configuration data
-
-    @return: nodes and links
     '''
 
     node_full_name = full_name(nodes[0].name, wall_config)
@@ -305,15 +304,16 @@ def emulab_topology(nodes, links, wall_config):
         cmd = 'cat /var/emulab/boot/ifmap'
         node_full_name  = full_name(node.name, wall_config)
         output = execute_command(node_full_name, cmd, wall_config)
-        output = output.split()
-        for link in links:
-            if link.node_a == node.name and \
-               link.int_a.ip == output[1]:
-                link.int_a.name = output[0]
-            elif link.node_b == node.name and \
-               link.int_b.ip == output[1]:
-                link.int_b.name =  output[0]
-
+        output = re.split('\\\\n', output)
+        for item in output:
+            item = item.split()
+            for link in links:
+                if link.node_a == node.name and \
+                   link.int_a.ip == item[1]:
+                    link.int_a.name = item[0]
+                elif link.node_b == node.name and \
+                     link.int_b.ip == item[1]:
+                    link.int_b.name =  item[0]
 
 def setup_vlan(node_name, vlan_id, int_name, wall_config):
     '''
@@ -324,6 +324,7 @@ def setup_vlan(node_name, vlan_id, int_name, wall_config):
     @param int_name: The name of the interface
     @param wall_config: vwall configuration data
     '''
+    debug("Setting up VLAN on node " + node_name)
 
     node_full_name = full_name(node_name, wall_config)
     cmd = "sudo ip link add link " + \
