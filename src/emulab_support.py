@@ -96,7 +96,7 @@ def execute_command(hostname, command, wall_config, time_out = 3):
     try:
         ssh_client.connect(socket.gethostbyname(hostname), 22,
                            wall_config.username, wall_config.password,
-                           look_for_keys=False, timeout=time_out)
+                           look_for_keys=True, timeout=time_out)
         stdin, stdout, stderr = ssh_client.exec_command(command)
         err = str(stderr.read()).strip('b\'\"\\n')
         if err != "":
