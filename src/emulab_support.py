@@ -94,7 +94,7 @@ def execute_command(hostname, command, wall_config, time_out = 3):
     ssh_client = get_ssh_client()
 
     try:
-        ssh_client.connect(socket.gethostbyname(hostname), 22,
+        ssh_client.connect(hostname, 22,
                            wall_config.username, wall_config.password,
                            look_for_keys=True, timeout=time_out)
         stdin, stdout, stderr = ssh_client.exec_command(command)
@@ -123,10 +123,10 @@ def copy_file_to_vwall(hostname, text, file_name, wall_config):
     ssh_client = get_ssh_client()
 
     try:
-        ssh_client.connect(socket.gethostbyname(hostname), 22,
+        ssh_client.connect(hostname, 22,
                            wall_config.username,
                            wall_config.password,
-                           look_for_keys=False)
+                           look_for_keys=True)
 
         cmd = "touch " + file_name + \
               "; chmod a+rwx " + file_name
