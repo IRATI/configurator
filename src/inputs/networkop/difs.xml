@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<difs>
+  <dif id="servicechain" type="normal-ipc" template="servicechain.dif" />
+  <dif id="fabric" type="normal-ipc" template="fabric.dif" />
+  <dif id="eth.shim0" type="shim-eth-vlan" link="link0"/>
+  <dif id="eth.shim1" type="shim-eth-vlan" link="link1"/>
+  <dif id="eth.shim2" type="shim-eth-vlan" link="link2"/>
+  <dif id="eth.shim3" type="shim-eth-vlan" link="link3"/>
+  <dif id="eth.shim4" type="shim-eth-vlan" link="link4"/>
+</difs>

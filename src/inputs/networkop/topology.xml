@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<topology>
+
+  <node id="system1"/>
+  <node id="system2"/>
+  <node id="system3"/>
+  <node id="system4"/>
+  <node id="system5"/>
+  <node id="system6"/>
+
+  <link id="link0">
+    <from node="system1"/>
+    <to   node="system2"/>
+  </link>
+
+  <link id="link1">
+    <from node="system3"/>
+    <to   node="system2"/>
+  </link>
+
+  <link id="link2">
+    <from node="system4"/>
+    <to   node="system2"/>
+  </link>
+
+  <link id="link3">
+    <from node="system5"/>
+    <to   node="system2"/>
+  </link>
+
+  <link id="link4">
+    <from node="system6"/>
+    <to   node="system2"/>
+  </link>
+
+</topology>

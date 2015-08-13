@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<ipcps>
+
+  <node id="system1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
+    <ipcp ap-name="system1.fabric" ap-instance="1" dif="fabric">
+      <register-dif name="eth.shim0"/>
+    </ipcp>
+    <ipcp ap-name="system1.sc" ap-instance="1" dif="servicechain">
+      <register-dif name="fabric"/>
+    </ipcp>
+  </node>
+  <node id="system2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim1"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim2"/>
+    <ipcp ap-name="shim-eth" ap-instance="4" dif="eth.shim3"/>
+    <ipcp ap-name="shim-eth" ap-instance="5" dif="eth.shim4"/>
+    <ipcp ap-name="system2" ap-instance="1" dif="fabric">
+      <register-dif name="eth.shim0"/>
+      <register-dif name="eth.shim1"/>
+      <register-dif name="eth.shim2"/>
+      <register-dif name="eth.shim3"/>
+      <register-dif name="eth.shim4"/>
+    </ipcp>
+  </node>
+  <node id="system3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim1"/>
+    <ipcp ap-name="system3.fabric" ap-instance="1" dif="fabric">
+      <register-dif name="eth.shim1"/>
+    </ipcp>
+    <ipcp ap-name="system3.sc" ap-instance="1" dif="servicechain">
+      <register-dif name="fabric"/>
+    </ipcp>
+  </node>
+  <node id="system4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim2"/>
+    <ipcp ap-name="system4.fabric" ap-instance="1" dif="fabric">
+      <register-dif name="eth.shim2"/>
+    </ipcp>
+    <ipcp ap-name="system4.sc" ap-instance="1" dif="servicechain">
+      <register-dif name="fabric"/>
+    </ipcp>
+  </node>
+  <node id="system5">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim3"/>
+    <ipcp ap-name="system5.fabric" ap-instance="1" dif="fabric">
+      <register-dif name="eth.shim3"/>
+    </ipcp>
+    <ipcp ap-name="system5.sc" ap-instance="1" dif="servicechain">
+      <register-dif name="fabric"/>
+    </ipcp>
+  </node>
+  <node id="system6">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim4"/>
+    <ipcp ap-name="system6.fabric" ap-instance="1" dif="fabric">
+      <register-dif name="eth.shim4"/>
+    </ipcp>
+  </node>
+
+</ipcps>

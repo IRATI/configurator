@@ -76,6 +76,7 @@ AC_CONFIG_FILES([
     src/inputs/2nodes/Makefile
     src/inputs/datnet/Makefile
     src/inputs/distcloud/Makefile
+    src/inputs/networkop/Makefile
 ])
 
 AC_OUTPUT
