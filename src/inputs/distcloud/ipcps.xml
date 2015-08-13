@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<ipcps>
+
+  <node id="r1n1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim1"/>
+    <ipcp ap-name="r1n1" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim0"/>
+      <register-dif name="eth.shim1"/>
+    </ipcp>
+  </node>
+  <node id="r1n2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim4"/>
+    <ipcp ap-name="r1n2" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim0"/>
+      <register-dif name="eth.shim4"/>
+    </ipcp>
+  </node>
+  <node id="r1n3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim2"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim3"/>
+    <ipcp ap-name="r1n3" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim2"/>
+      <register-dif name="eth.shim3"/>
+    </ipcp>
+  </node>
+  <node id="r1n4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim1"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim2"/>
+    <ipcp ap-name="r1n4" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim1"/>
+      <register-dif name="eth.shim2"/>
+    </ipcp>
+  </node>
+  <node id="r1b1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim3"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim4"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim11"/>
+    <ipcp ap-name="r1b1.backbone" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim11"/>
+    </ipcp>
+    <ipcp ap-name="r1b1.cloud" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim3"/>
+      <register-dif name="eth.shim4"/>
+      <register-dif name="backbone"/>
+    </ipcp>
+  </node>
+
+  <node id="r2n1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim5"/>
+    <ipcp ap-name="r2-n1" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim5"/>
+    </ipcp>
+  </node>
+  <node id="r2n2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim6"/>
+    <ipcp ap-name="r2-n2" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim6"/>
+    </ipcp>
+  </node>
+  <node id="r2b1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim5"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim6"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim12"/>
+    <ipcp ap-name="r2b1.backbone" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim12"/>
+    </ipcp>
+    <ipcp ap-name="r2b1.cloud" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim5"/>
+      <register-dif name="eth.shim6"/>
+      <register-dif name="backbone"/>
+    </ipcp>
+  </node>
+
+  <node id="r3n1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim7"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim9"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim10"/>
+    <ipcp ap-name="r3n1" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim7"/>
+      <register-dif name="eth.shim9"/>
+      <register-dif name="eth.shim10"/>
+    </ipcp>
+  </node>
+  <node id="r3n2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim7"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim8"/>
+    <ipcp ap-name="r3n2" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim7"/>
+      <register-dif name="eth.shim8"/>
+    </ipcp>
+  </node>
+  <node id="r3n3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim8"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim9"/>
+    <ipcp ap-name="r3n3" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim8"/>
+      <register-dif name="eth.shim9"/>
+    </ipcp>
+  </node>
+  <node id="r3b1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim10"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim13"/>
+    <ipcp ap-name="r3b1.backbone" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim13"/>
+    </ipcp>
+    <ipcp ap-name="r3b1.cloud" ap-instance="1" dif="cloud">
+      <register-dif name="eth.shim10"/>
+      <register-dif name="backbone"/>
+    </ipcp>
+  </node>
+
+  <node id="br1">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim16"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim17"/>
+    <ipcp ap-name="br1" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim16"/>
+      <register-dif name="eth.shim17"/>
+    </ipcp>
+  </node>
+  <node id="br2">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim12"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim14"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim15"/>
+    <ipcp ap-name="br2" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim12"/>
+      <register-dif name="eth.shim14"/>
+      <register-dif name="eth.shim15"/>
+    </ipcp>
+  </node>
+  <node id="br3">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim13"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim15"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim16"/>
+    <ipcp ap-name="br3" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim13"/>
+      <register-dif name="eth.shim15"/>
+      <register-dif name="eth.shim16"/>
+    </ipcp>
+  </node>
+  <node id="br4">
+    <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim11"/>
+    <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim14"/>
+    <ipcp ap-name="shim-eth" ap-instance="3" dif="eth.shim17"/>
+    <ipcp ap-name="br4" ap-instance="1" dif="backbone">
+      <register-dif name="eth.shim11"/>
+      <register-dif name="eth.shim14"/>
+      <register-dif name="eth.shim17"/>
+    </ipcp>
+  </node>
+
+</ipcps>

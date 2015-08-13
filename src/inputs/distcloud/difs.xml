@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<difs>
+  <dif id="backbone" type="normal-ipc" template="backbone.dif" />
+  <dif id="cloud" type="normal-ipc" template="cloud.dif" />
+  <dif id="eth.shim0" type="shim-eth-vlan" link="link0"/>
+  <dif id="eth.shim1" type="shim-eth-vlan" link="link1"/>
+  <dif id="eth.shim2" type="shim-eth-vlan" link="link2"/>
+  <dif id="eth.shim3" type="shim-eth-vlan" link="link3"/>
+  <dif id="eth.shim4" type="shim-eth-vlan" link="link4"/>
+  <dif id="eth.shim5" type="shim-eth-vlan" link="link5"/>
+  <dif id="eth.shim6" type="shim-eth-vlan" link="link6"/>
+  <dif id="eth.shim7" type="shim-eth-vlan" link="link7"/>
+  <dif id="eth.shim8" type="shim-eth-vlan" link="link8"/>
+  <dif id="eth.shim9" type="shim-eth-vlan" link="link9"/>
+  <dif id="eth.shim10" type="shim-eth-vlan" link="link10"/>
+  <dif id="eth.shim11" type="shim-eth-vlan" link="link11"/>
+  <dif id="eth.shim12" type="shim-eth-vlan" link="link12"/>
+  <dif id="eth.shim13" type="shim-eth-vlan" link="link13"/>
+  <dif id="eth.shim14" type="shim-eth-vlan" link="link14"/>
+  <dif id="eth.shim15" type="shim-eth-vlan" link="link15"/>
+  <dif id="eth.shim16" type="shim-eth-vlan" link="link16"/>
+  <dif id="eth.shim17" type="shim-eth-vlan" link="link17"/>
+</difs>

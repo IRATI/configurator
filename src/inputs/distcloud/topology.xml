@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<topology>
+
+  <node id="r1n1"/>
+  <node id="r1n2"/>
+  <node id="r1n3"/>
+  <node id="r1n4"/>
+  <node id="r1b1"/>
+
+  <node id="r2n1"/>
+  <node id="r2n2"/>
+  <node id="r2b1"/>
+
+  <node id="r3n1"/>
+  <node id="r3n2"/>
+  <node id="r3n3"/>
+  <node id="r3b1"/>
+
+  <node id="br1"/>
+  <node id="br2"/>
+  <node id="br3"/>
+  <node id="br4"/>
+
+  <link id="link0">
+    <from node="r1n1"/>
+    <to   node="r1n2"/>
+  </link>
+
+  <link id="link1">
+    <from node="r1n1"/>
+    <to   node="r1n4"/>
+  </link>
+
+  <link id="link2">
+    <from node="r1n4"/>
+    <to   node="r1n3"/>
+  </link>
+
+  <link id="link3">
+    <from node="r1n3"/>
+    <to   node="r1b1"/>
+  </link>
+
+  <link id="link4">
+    <from node="r1b1"/>
+    <to   node="r1n2"/>
+  </link>
+
+  <link id="link5">
+    <from node="r2n1"/>
+    <to   node="r2b1"/>
+  </link>
+
+  <link id="link6">
+    <from node="r2n2"/>
+    <to   node="r2b1"/>
+  </link>
+
+  <link id="link7">
+    <from node="r3n1"/>
+    <to   node="r3n2"/>
+  </link>
+
+  <link id="link8">
+    <from node="r3n2"/>
+    <to   node="r3n3"/>
+  </link>
+
+  <link id="link9">
+    <from node="r3n3"/>
+    <to   node="r3n1"/>
+  </link>
+
+  <link id="link10">
+    <from node="r3n1"/>
+    <to   node="r3b1"/>
+  </link>
+
+  <link id="link11">
+    <from node="r1b1"/>
+    <to   node="br4"/>
+  </link>
+
+  <link id="link12">
+    <from node="r2b1"/>
+    <to   node="br2"/>
+  </link>
+
+  <link id="link13">
+    <from node="r3b1"/>
+    <to   node="br3"/>
+  </link>
+
+  <link id="link14">
+    <from node="br4"/>
+    <to   node="br2"/>
+  </link>
+
+  <link id="link15">
+    <from node="br2"/>
+    <to   node="br3"/>
+  </link>
+
+  <link id="link16">
+    <from node="br3"/>
+    <to   node="br1"/>
+  </link>
+
+  <link id="link17">
+    <from node="br1"/>
+    <to   node="br4"/>
+  </link>
+
+</topology>
