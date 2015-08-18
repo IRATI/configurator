@@ -29,44 +29,44 @@
     <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim0"/>
     <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim4"/>
     <ipcp ap-name="server1" ap-instance="1" dif="dc">
-      <register-dif name="eth.shim0"/>
       <register-dif name="eth.shim4"/>
     </ipcp>
     <ipcp ap-name="server1.tenant1" ap-instance="1" dif="tenant1">
       <register-dif name="dc"/>
+      <register-dif name="eth.shim0"/>
     </ipcp>
   </node>
   <node id="server2">
     <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim1"/>
     <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim5"/>
     <ipcp ap-name="server2" ap-instance="1" dif="dc">
-      <register-dif name="eth.shim1"/>
       <register-dif name="eth.shim5"/>
     </ipcp>
     <ipcp ap-name="server2.tenant1" ap-instance="1" dif="tenant1">
       <register-dif name="dc"/>
+      <register-dif name="eth.shim1"/>
     </ipcp>
   </node>
   <node id="server3">
     <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim2"/>
     <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim6"/>
     <ipcp ap-name="server3" ap-instance="1" dif="dc">
-      <register-dif name="eth.shim2"/>
       <register-dif name="eth.shim6"/>
     </ipcp>
     <ipcp ap-name="server3.tenant2" ap-instance="1" dif="tenant2">
       <register-dif name="dc"/>
+      <register-dif name="eth.shim2"/>
     </ipcp>
   </node>
   <node id="server4">
     <ipcp ap-name="shim-eth" ap-instance="1" dif="eth.shim3"/>
     <ipcp ap-name="shim-eth" ap-instance="2" dif="eth.shim7"/>
     <ipcp ap-name="server4" ap-instance="1" dif="dc">
-      <register-dif name="eth.shim3"/>
       <register-dif name="eth.shim7"/>
     </ipcp>
     <ipcp ap-name="server4.tenant2" ap-instance="1" dif="tenant2">
       <register-dif name="dc"/>
+      <register-dif name="eth.shim3"/>
     </ipcp>
   </node>
 
