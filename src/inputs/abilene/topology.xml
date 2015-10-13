@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<topology>
+
+  <node id="SE"/>
+  <node id="SU"/>
+  <node id="LA"/>
+  <node id="KC"/>
+  <node id="DE"/>
+  <node id="HO"/>
+  <node id="CH"/>
+  <node id="IN"/>
+  <node id="AT"/>
+  <node id="DC"/>
+  <node id="NY"/>
+
+  <link id="link00">
+    <from node="SE"/>
+    <to   node="SU"/>
+  </link>
+
+  <link id="link01">
+    <from node="SE"/>
+    <to   node="DE"/>
+  </link>
+
+  <link id="link02">
+    <from node="SU"/>
+    <to   node="DE"/>
+  </link>
+
+  <link id="link03">
+    <from node="SU"/>
+    <to   node="LA"/>
+  </link>
+
+  <link id="link04">
+    <from node="LA"/>
+    <to   node="HO"/>
+  </link>
+
+  <link id="link05">
+    <from node="DE"/>
+    <to   node="KC"/>
+  </link>
+
+  <link id="link06">
+    <from node="KC"/>
+    <to   node="HO"/>
+  </link>
+
+  <link id="link07">
+    <from node="KC"/>
+    <to   node="IN"/>
+  </link>
+
+  <link id="link08">
+    <from node="HO"/>
+    <to   node="AT"/>
+  </link>
+
+  <link id="link09">
+    <from node="AT"/>
+    <to   node="IN"/>
+  </link>
+
+  <link id="link10">
+    <from node="IN"/>
+    <to   node="CH"/>
+  </link>
+
+  <link id="link11">
+    <from node="CH"/>
+    <to   node="NY"/>
+  </link>
+
+  <link id="link12">
+    <from node="AT"/>
+    <to   node="DC"/>
+  </link>
+
+  <link id="link13">
+    <from node="DC"/>
+    <to   node="NY"/>
+  </link>
+
+</topology>
