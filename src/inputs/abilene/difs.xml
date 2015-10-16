@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<difs>
+  <dif id="abilene" type="normal-ipc" template="abilene.dif" />
+  <dif id="eth.shim00" type="shim-eth-vlan" link="link00"/>
+  <dif id="eth.shim01" type="shim-eth-vlan" link="link01"/>
+  <dif id="eth.shim02" type="shim-eth-vlan" link="link02"/>
+  <dif id="eth.shim03" type="shim-eth-vlan" link="link03"/>
+  <dif id="eth.shim04" type="shim-eth-vlan" link="link04"/>
+  <dif id="eth.shim05" type="shim-eth-vlan" link="link05"/>
+  <dif id="eth.shim06" type="shim-eth-vlan" link="link06"/>
+  <dif id="eth.shim07" type="shim-eth-vlan" link="link07"/>
+  <dif id="eth.shim08" type="shim-eth-vlan" link="link08"/>
+  <dif id="eth.shim09" type="shim-eth-vlan" link="link09"/>
+  <dif id="eth.shim10" type="shim-eth-vlan" link="link10"/>
+  <dif id="eth.shim11" type="shim-eth-vlan" link="link11"/>
+  <dif id="eth.shim12" type="shim-eth-vlan" link="link12"/>
+  <dif id="eth.shim13" type="shim-eth-vlan" link="link13"/>
+</difs>

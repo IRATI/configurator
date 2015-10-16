@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<ipcps>
+  <node id="SE">
+    <ipcp ap-name="shim-eth-00" ap-instance="1" dif="eth.shim00"/>
+    <ipcp ap-name="shim-eth-01" ap-instance="1" dif="eth.shim01"/>
+    <ipcp ap-name="abilene.SE" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim00"/>
+      <register-dif name="eth.shim01"/>
+    </ipcp>
+  </node>
+  <node id="SU">
+    <ipcp ap-name="shim-eth-00" ap-instance="1" dif="eth.shim00"/>
+    <ipcp ap-name="shim-eth-02" ap-instance="1" dif="eth.shim02"/>
+    <ipcp ap-name="shim-eth-03" ap-instance="1" dif="eth.shim03"/>
+    <ipcp ap-name="abilene.SU" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim00"/>
+      <register-dif name="eth.shim02"/>
+      <register-dif name="eth.shim03"/>
+    </ipcp>
+  </node>
+  <node id="DE">
+    <ipcp ap-name="shim-eth-01" ap-instance="1" dif="eth.shim01"/>
+    <ipcp ap-name="shim-eth-02" ap-instance="1" dif="eth.shim02"/>
+    <ipcp ap-name="shim-eth-05" ap-instance="1" dif="eth.shim05"/>
+    <ipcp ap-name="abilene.DE" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim01"/>
+      <register-dif name="eth.shim02"/>
+      <register-dif name="eth.shim05"/>
+    </ipcp>
+  </node>
+  <node id="LA">
+    <ipcp ap-name="shim-eth-03" ap-instance="1" dif="eth.shim03"/>
+    <ipcp ap-name="shim-eth-04" ap-instance="1" dif="eth.shim04"/>
+    <ipcp ap-name="abilene.LA" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim03"/>
+      <register-dif name="eth.shim04"/>
+    </ipcp>
+  </node>
+  <node id="KC">
+    <ipcp ap-name="shim-eth-05" ap-instance="1" dif="eth.shim05"/>
+    <ipcp ap-name="shim-eth-06" ap-instance="1" dif="eth.shim06"/>
+    <ipcp ap-name="shim-eth-07" ap-instance="1" dif="eth.shim07"/>
+    <ipcp ap-name="abilene.KC" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim05"/>
+      <register-dif name="eth.shim06"/>
+      <register-dif name="eth.shim07"/>
+    </ipcp>
+  </node>
+  <node id="HO">
+    <ipcp ap-name="shim-eth-04" ap-instance="1" dif="eth.shim04"/>
+    <ipcp ap-name="shim-eth-06" ap-instance="1" dif="eth.shim06"/>
+    <ipcp ap-name="shim-eth-08" ap-instance="1" dif="eth.shim08"/>
+    <ipcp ap-name="abilene.HO" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim04"/>
+      <register-dif name="eth.shim06"/>
+      <register-dif name="eth.shim08"/>
+    </ipcp>
+  </node>
+  <node id="IN">
+    <ipcp ap-name="shim-eth-07" ap-instance="1" dif="eth.shim07"/>
+    <ipcp ap-name="shim-eth-09" ap-instance="1" dif="eth.shim09"/>
+    <ipcp ap-name="shim-eth-10" ap-instance="1" dif="eth.shim10"/>
+    <ipcp ap-name="abilene.IN" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim07"/>
+      <register-dif name="eth.shim09"/>
+      <register-dif name="eth.shim10"/>
+    </ipcp>
+  </node>
+  <node id="AT">
+    <ipcp ap-name="shim-eth-08" ap-instance="1" dif="eth.shim08"/>
+    <ipcp ap-name="shim-eth-09" ap-instance="1" dif="eth.shim09"/>
+    <ipcp ap-name="shim-eth-12" ap-instance="1" dif="eth.shim12"/>
+    <ipcp ap-name="abilene.AT" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim08"/>
+      <register-dif name="eth.shim09"/>
+      <register-dif name="eth.shim12"/>
+    </ipcp>
+  </node>
+  <node id="CH">
+    <ipcp ap-name="shim-eth-10" ap-instance="1" dif="eth.shim10"/>
+    <ipcp ap-name="shim-eth-11" ap-instance="1" dif="eth.shim11"/>
+    <ipcp ap-name="abilene.CH" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim10"/>
+      <register-dif name="eth.shim11"/>
+    </ipcp>
+  </node>
+  <node id="NY">
+    <ipcp ap-name="shim-eth-11" ap-instance="1" dif="eth.shim11"/>
+    <ipcp ap-name="shim-eth-13" ap-instance="1" dif="eth.shim13"/>
+    <ipcp ap-name="abilene.NY" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim11"/>
+      <register-dif name="eth.shim13"/>
+    </ipcp>
+  </node>
+  <node id="DC">
+    <ipcp ap-name="shim-eth-12" ap-instance="1" dif="eth.shim12"/>
+    <ipcp ap-name="shim-eth-13" ap-instance="1" dif="eth.shim13"/>
+    <ipcp ap-name="abilene.DC" ap-instance="1" dif="abilene">
+      <register-dif name="eth.shim12"/>
+      <register-dif name="eth.shim13"/>
+    </ipcp>
+  </node>
+</ipcps>
